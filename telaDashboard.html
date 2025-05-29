@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Seu Painel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            /* Um branco levemente azulado/acinzentado */
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            /* Azul escuro para texto principal */
+            --text-light: #7f8c8d;
+            /* Cinza para texto secundário */
+            --positive-color: #2ecc71;
+            --negative-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.06) 2px, transparent 2px),
+                radial-gradient(circle at 60% 10%, rgba(255, 255, 255, 0.04) 3px, transparent 3px),
+                radial-gradient(circle at 35% 50%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+            animation: float 26s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-68px) rotate(165deg) scale(1.035);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            /* Fundo do container */
+            min-height: 100vh;
+            padding-bottom: 90px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 70%, #5c6bc0 100%);
+            color: white;
+            padding: 30px 20px 40px;
+            /* Mais padding inferior */
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: 0 12px 35px rgba(63, 81, 181, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInDownHeader 0.8s ease-out;
+        }
+
+        header::before {
+            /* Efeito de brilho sutil no header */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShine 4.5s ease-in-out infinite;
+        }
+
+        @keyframes headerShine {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            /* Aumentado */
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .notification-bell {
+            font-size: 22px;
+            cursor: pointer;
+            position: relative;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .notification-bell .badge {
+            /* Badge de notificação */
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--negative-color);
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+
+        .balance-info .label {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .balance-info .balance {
+            font-size: 34px;
+            /* Maior */
+            font-weight: 800;
+            /* Mais peso */
+            margin-bottom: 10px;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.15));
+        }
+
+        .balance-info .change {
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 6px 12px;
+            /* Ajustado */
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+
+        .change.positive {
+            color: #c8e6c9;
+            background-color: rgba(76, 175, 80, 0.25);
+        }
+
+        .change.negative {
+            color: #ffcdd2;
+            background-color: rgba(244, 67, 54, 0.25);
+        }
+
+        .chart-placeholder {
+            height: 140px;
+            /* Maior */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 18px;
+            /* Mais arredondado */
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .chart-placeholder i {
+            font-size: 30px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .quick-actions {
+            display: grid;
+            /* Usando grid para 4 colunas */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            /* Espaço entre botões */
+            background-color: var(--card-bg);
+            margin: -30px 20px 25px;
+            /* Sobreposição elegante */
+            padding: 20px;
+            /* Padding interno */
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            animation: fadeInUpQuickActions 0.7s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpQuickActions {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .action-icon {
+            width: 50px;
+            /* Maior */
+            height: 50px;
+            background: linear-gradient(145deg, #eef2f9, #f8f9fd);
+            /* Gradiente sutil */
+            border-radius: 16px;
+            /* Mais quadrado-arredondado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: var(--primary-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .action-btn:hover .action-icon {
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.25);
+        }
+
+        .content-sections-wrapper {
+            /* Para animação de entrada das seções */
+            animation: fadeInSections 0.6s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInSections {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            padding: 0 20px 25px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            font-weight: 700;
+            /* Mais peso */
+        }
+
+        .section-title h2 {
+            font-size: 20px;
+            color: var(--secondary-color);
+        }
+
+        /* Maior */
+        .see-all {
+            color: var(--primary-color);
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .see-all:hover {
+            color: var(--secondary-color);
+        }
+
+        .news-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 18px;
+            /* Aumentado */
+            padding: 5px 2px 15px 2px;
+            /* Padding para scroll e respiro */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .news-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .news-card {
+            min-width: 240px;
+            /* Maior */
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            /* Mais arredondado */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .news-image {
+            height: 120px;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .news-card:hover .news-image {
+            transform: scale(1.1);
+        }
+
+        .news-content {
+            padding: 15px;
+        }
+
+        .news-title {
+            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            line-height: 1.45;
+            color: var(--text-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .news-source {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .challenge-card {
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .challenge-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffecb3, var(--accent-color));
+            /* Gradiente Amarelo */
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: #a0522d;
+            /* Marrom para ícone */
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover .challenge-icon {
+            transform: rotate(-10deg) scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .challenge-info {
+            flex: 1;
+        }
+
+        .challenge-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        .challenge-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .bottom-nav {
+            /* Mesmo estilo da Carteira */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            /* Mesmo estilo da Carteira */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            /* Mesmo estilo da Carteira */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.1), rgba(63, 81, 181, 0.1));
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            border-radius: 16px;
+        }
+
+        .nav-btn.active::before {
+            transform: scale(1);
+        }
+
+        .nav-btn.active {
+            color: #1a237e;
+            transform: translateY(-3px);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            /* Mesmo estilo da Carteira */
+            font-size: 24px;
+            margin-bottom: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-btn.active .nav-icon {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="greeting">Olá, Investidor! 👋</div>
+                <div class="notification-bell"><i class="fas fa-bell"></i><span class="badge"></span></div>
+            </div>
+            <div class="balance-info">
+                <div class="label">Seu Patrimônio Atual</div>
+                <div class="balance" data-target="5247.89">R$ 0,00</div>
+                <div class="change positive"><i class="fas fa-arrow-up"></i> + R$ 245,12 (4,9%) Hoje</div>
+            </div>
+            <div class="chart-placeholder">
+                <i class="fas fa-chart-pie"></i>
+                Evolução da Carteira (Resumo)
+            </div>
+        </header>
+
+        <div class="quick-actions">
+            <button class="action-btn" href="telaCarteira.html">
+                <div class="action-icon"><i class="fas fa-wallet"></i></div>
+                <span>Carteira</span>
+            </button>
+            <button class="action-btn" onclick="navigateTo('explorar')">
+                <div class="action-icon"><i class="fas fa-search-dollar"></i></div>
+                <span>Explorar</span>
+            </button>
+            <button class="action-btn" onclick="navigateTo('quiz')">
+                <div class="action-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Quiz</span>
+            </button>
+            <button class="action-btn" onclick="navigateTo('simulador')">
+                <div class="action-icon"><i class="fas fa-calculator"></i></div>
+                <span>Simular</span>
+            </button>
+        </div>
+
+        <div class="content-sections-wrapper">
+            <div class="section">
+                <div class="section-title">
+                    <h2><i class="far fa-newspaper" style="margin-right: 8px;"></i>Notícias do Mercado</h2>
+                    <a href="#" class="see-all">Ver tudo <i class="fas fa-chevron-right"
+                            style="font-size: 10px;"></i></a>
+                </div>
+                <div class="news-container">
+                    <div class="news-card" onclick="navigateTo('noticia1')">
+                        <img src="https://media.licdn.com/dms/image/v2/C4E03AQFw6aZA-9jIUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1644710757860?e=2147483647&v=beta&t=zqOSgr_cCS8B9aqoZFjEpdmXcEaVrsJ8lZ3_MAFvpXs" alt="Notícia 1"
+                            class="news-image">
+                        <div class="news-content">
+                            <div class="news-title">Impacto da Selic nos investimentos de Renda Fixa e Variável</div>
+                            <div class="news-source">Valor Investe • 5 min leitura</div>
+                        </div>
+                    </div>
+                    <div class="news-card" onclick="navigateTo('noticia2')">
+                        <img src="https://media.licdn.com/dms/image/v2/C4E03AQFw6aZA-9jIUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1644710757860?e=2147483647&v=beta&t=zqOSgr_cCS8B9aqoZFjEpdmXcEaVrsJ8lZ3_MAFvpXs"
+                            alt="Notícia 2" class="news-image">
+                        <div class="news-content">
+                            <div class="news-title">Bitcoin e Ethereum: Novas perspectivas para o mercado cripto em 2025
+                            </div>
+                            <div class="news-source">CoinTelegraph • 8 min leitura</div>
+                        </div>
+                    </div>
+                    <div class="news-card" onclick="navigateTo('noticia3')">
+                        <img src="https://media.licdn.com/dms/image/v2/C4E03AQFw6aZA-9jIUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1644710757860?e=2147483647&v=beta&t=zqOSgr_cCS8B9aqoZFjEpdmXcEaVrsJ8lZ3_MAFvpXs"
+                            alt="Notícia 3" class="news-image">
+                        <div class="news-content">
+                            <div class="news-title">Fundos Imobiliários (FIIs): O que esperar para o próximo semestre?
+                            </div>
+                            <div class="news-source">InfoMoney • 3 min leitura</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">
+                    <h2><i class="fas fa-bullseye" style="margin-right: 8px;"></i>Seus Desafios Ativos</h2>
+                    <a href="#" class="see-all">Ver todos <i class="fas fa-chevron-right"
+                            style="font-size: 10px;"></i></a>
+                </div>
+                <div class="challenges-container">
+                    <div class="challenge-card" onclick="navigateTo('desafio1')">
+                        <div class="challenge-icon">🎯</div>
+                        <div class="challenge-info">
+                            <div class="challenge-title">Primeiro Mergulho em FIIs</div>
+                            <div class="challenge-desc">Adicione seu primeiro Fundo Imobiliário à carteira virtual e
+                                ganhe 50 pontos!</div>
+                        </div>
+                    </div>
+                    <div class="challenge-card" onclick="navigateTo('desafio2')">
+                        <div class="challenge-icon">💡</div>
+                        <div class="challenge-info">
+                            <div class="challenge-title">Mestre dos Quizzes: Renda Fixa</div>
+                            <div class="challenge-desc">Acerte 80% no quiz sobre Tesouro Direto e CDBs para desbloquear
+                                uma conquista.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="#" class="nav-btn active">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Início</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+                <span>Carteira</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div>
+                <span>Aprender</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animação de contagem para o saldo
+            const balanceEl = document.querySelector('.balance');
+            if (balanceEl) {
+                const targetBalance = parseFloat(balanceEl.getAttribute('data-target'));
+                let currentBalance = 0;
+                const duration = 1500; // 1.5 segundos
+                const steps = 60;
+                const stepTime = duration / steps;
+                const increment = targetBalance / steps;
+
+                let i = 0;
+                const timer = setInterval(() => {
+                    currentBalance += increment;
+                    i++;
+                    if (i >= steps) {
+                        balanceEl.textContent = `R$ ${targetBalance.toFixed(2).replace('.', ',')}`;
+                        clearInterval(timer);
+                    } else {
+                        balanceEl.textContent = `R$ ${currentBalance.toFixed(2).replace('.', ',')}`;
+                    }
+                }, stepTime);
+            }
+
+            // Ripple e navegação (simulada)
+            const allClickableElements = document.querySelectorAll('.action-btn, .news-card, .challenge-card, .nav-btn, .notification-bell, .see-all');
+            allClickableElements.forEach(element => {
+                element.addEventListener('click', function (e) {
+                    if (!element.classList.contains('nav-btn')) e.preventDefault(); // Previne se for link
+
+                    addRippleEffect(this, e, this.classList.contains('nav-btn'));
+
+                    if (this.classList.contains('nav-btn')) {
+                        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                    // Simulação de navegação
+                    const target = this.getAttribute('onclick') ? this.getAttribute('onclick').match(/navigateTo\('([^']+)'\)/) : null;
+                    if (target && target[1]) {
+                        console.log('Navegar para:', target[1]);
+                    } else if (this.classList.contains('notification-bell')) {
+                        console.log('Abrir notificações');
+                    } else if (this.classList.contains('see-all')) {
+                        console.log('Ver todos de:', this.previousElementSibling.textContent.trim());
+                    }
+                });
+            });
+
+            window.navigateTo = function (screen) { // Tornar acessível globalmente para os onclicks
+                console.log('Navegar (função global) para:', screen);
+            }
+
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimDashboard 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+
+            if (!document.querySelector('style#rippleAnimationDashboard')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationDashboard';
+                style.textContent = `@keyframes rippleAnimDashboard { to { transform: scale(15); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

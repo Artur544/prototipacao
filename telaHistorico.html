@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Histórico de Transações</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            /* Definindo variáveis de cor globais para consistência */
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+            --positive-color: #2ecc71;
+            --negative-color: #e74c3c;
+            --dividend-color: #f39c12;
+            /* Laranja para dividendos */
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 5% 80%, rgba(255, 255, 255, 0.06) 2px, transparent 2px),
+                radial-gradient(circle at 90% 15%, rgba(255, 255, 255, 0.04) 3px, transparent 3px),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+            animation: float 23s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-62px) rotate(175deg) scale(1.025);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px 20px;
+            position: sticky;
+            /* Faz o header fixo no topo durante o scroll */
+            top: 0;
+            z-index: 100;
+            /* Garante que o header fique sobre as tabs */
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(63, 81, 181, 0.3);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tabs-container {
+            /* Novo container para as abas para melhor posicionamento sticky */
+            position: sticky;
+            top: 77px;
+            /* Altura do header, ajuste conforme necessário */
+            z-index: 90;
+            /* Abaixo do header, acima do conteúdo */
+            background: var(--light-bg);
+            /* Para cobrir o conteúdo ao rolar */
+            padding: 15px 20px 10px;
+            /* Espaçamento interno */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            /* Sombra suave para destacar */
+            animation: fadeInTabs 0.6s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInTabs {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--card-bg);
+            border-radius: 25px;
+            /* Mais arredondado */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 6px;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-radius: 20px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            position: relative;
+        }
+
+        .tab.active {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab:not(.active):hover {
+            color: var(--primary-color);
+            background-color: #e8eaf6;
+        }
+
+
+        .history-list {
+            padding: 20px;
+            /* Aumentado o padding para respiro */
+        }
+
+        .date-divider {
+            color: var(--text-light);
+            font-weight: 600;
+            /* Mais peso */
+            margin: 25px 0 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            /* Opcional: para dar mais destaque */
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            animation: fadeInElement 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .transaction-card {
+            background-color: var(--card-bg);
+            border-radius: 18px;
+            /* Mais arredondado */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 18px 20px;
+            /* Padding aumentado */
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 5px solid transparent;
+            /* Borda lateral para tipo de transação */
+            animation: fadeInElement 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Animação escalonada para os cards */
+        .transaction-card:nth-of-type(1) {
+            animation-delay: 0.3s;
+        }
+
+        .transaction-card:nth-of-type(2) {
+            animation-delay: 0.4s;
+        }
+
+        .transaction-card:nth-of-type(3) {
+            animation-delay: 0.5s;
+        }
+
+        .transaction-card:nth-of-type(4) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes fadeInElement {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .transaction-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-icon {
+            width: 48px;
+            /* Aumentado */
+            height: 48px;
+            border-radius: 14px;
+            /* Mais quadrado-arredondado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .buy {
+            background: linear-gradient(135deg, var(--positive-color), #5cb85c);
+            border-left-color: var(--positive-color);
+        }
+
+        .sell {
+            background: linear-gradient(135deg, var(--negative-color), #d9534f);
+            border-left-color: var(--negative-color);
+        }
+
+        .dividend {
+            background: linear-gradient(135deg, var(--dividend-color), #f0ad4e);
+            border-left-color: var(--dividend-color);
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .transaction-date {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .transaction-value {
+            text-align: right;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .value-positive {
+            color: var(--positive-color);
+        }
+
+        .value-negative {
+            color: var(--negative-color);
+        }
+
+        .value-dividend {
+            color: var(--dividend-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1><i class="fas fa-history" style="margin-right: 8px;"></i>Histórico</h1>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-filter="all">Todos</div>
+                <div class="tab" data-filter="buy">Compras</div>
+                <div class="tab" data-filter="sell">Vendas</div>
+                <div class="tab" data-filter="dividend">Dividendos</div>
+            </div>
+        </div>
+
+
+        <div class="history-list">
+            <div class="date-divider">Hoje, 29 de Maio</div>
+            <div class="transaction-card" data-type="buy">
+                <div class="transaction-icon buy"><i class="fas fa-shopping-cart"></i></div>
+                <div class="transaction-info">
+                    <div class="transaction-title">Compra de HGLG11</div>
+                    <div class="transaction-date">14:30:15</div>
+                </div>
+                <div class="transaction-value value-negative">- R$ 985,47</div>
+            </div>
+
+            <div class="date-divider">20 de Maio</div>
+            <div class="transaction-card" data-type="dividend">
+                <div class="transaction-icon dividend"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="transaction-info">
+                    <div class="transaction-title">Dividendo de PETR4</div>
+                    <div class="transaction-date">10:00:00</div>
+                </div>
+                <div class="transaction-value value-dividend">+ R$ 55,20</div>
+            </div>
+
+            <div class="date-divider">15 de Maio</div>
+            <div class="transaction-card" data-type="sell">
+                <div class="transaction-icon sell"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="transaction-info">
+                    <div class="transaction-title">Venda de MGLU3</div>
+                    <div class="transaction-date">11:15:30</div>
+                </div>
+                <div class="transaction-value value-positive">+ R$ 350,00</div>
+            </div>
+
+            <div class="date-divider">10 de Maio</div>
+            <div class="transaction-card" data-type="buy">
+                <div class="transaction-icon buy"><i class="fas fa-shopping-cart"></i></div>
+                <div class="transaction-info">
+                    <div class="transaction-title">Compra de PETR4</div>
+                    <div class="transaction-date">16:05:00</div>
+                </div>
+                <div class="transaction-value value-negative">- R$ 1.245,32</div>
+            </div>
+            <div class="transaction-card" data-type="dividend">
+                <div class="transaction-icon dividend"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="transaction-info">
+                    <div class="transaction-title">JCP de ITSA4</div>
+                    <div class="transaction-date">09:30:00</div>
+                </div>
+                <div class="transaction-value value-dividend">+ R$ 32,80</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const transactionCards = document.querySelectorAll('.transaction-card');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (event) {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    addRippleEffect(this, event);
+
+                    const filter = this.getAttribute('data-filter');
+                    transactionCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-type') === filter) {
+                            card.style.display = 'flex';
+                            // Re-trigger animation if needed, or simply ensure it's visible
+                            card.style.opacity = '0'; // Reset for animation
+                            void card.offsetWidth; // Force reflow
+                            card.style.animation = 'fadeInElement 0.5s ease-out forwards';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Para animação inicial dos cards visíveis
+            transactionCards.forEach((card, index) => {
+                if (card.style.display !== 'none') { // Se estiver visível
+                    card.style.animationDelay = `${0.1 + (index * 0.05)}s`;
+                }
+            });
+
+
+            window.goBack = function () {
+                // Em um app real, window.history.back() ou navegação específica
+                alert('Voltar para a tela anterior...');
+            }
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimHist 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+            if (!document.querySelector('style#rippleAnimationHist')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationHist';
+                style.textContent = `@keyframes rippleAnimHist { to { transform: scale(15); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

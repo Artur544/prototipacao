@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Seus Desafios!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+            --challenge-active-border: linear-gradient(135deg, #ffc107, #ffa000);
+            --challenge-completed-border: linear-gradient(135deg, #4CAF50, #66BB6A);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.07) 2px, transparent 2px),
+                radial-gradient(circle at 75% 30%, rgba(255, 255, 255, 0.05) 3px, transparent 3px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
+            animation: float 27s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-67px) rotate(155deg) scale(1.033);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            /* Espaço para bottom-nav */
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 70%, #5c6bc0 100%);
+            color: white;
+            padding: 30px 20px 0;
+            /* Removido padding inferior para colar as abas */
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 25px rgba(63, 81, 181, 0.3);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header::after {
+            /* Elemento decorativo */
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 70%);
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.2);
+        }
+
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            font-size: 28px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            opacity: 0.85;
+            font-size: 14px;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            background: transparent;
+            /* Abas diretamente no header */
+        }
+
+        .tab {
+            padding: 18px 15px;
+            /* Mais padding vertical */
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+            /* Mais peso */
+            color: rgba(255, 255, 255, 0.7);
+            border-bottom: 4px solid transparent;
+            /* Borda inferior mais grossa */
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            font-size: 15px;
+        }
+
+        .tab i {
+            margin-right: 8px;
+        }
+
+        .tab.active {
+            color: white;
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tab:not(.active):hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .challenges-list {
+            padding: 25px 20px;
+            /* Mais padding */
+        }
+
+        .challenge-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            /* Mais arredondado */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 22px;
+            /* Mais padding interno */
+            margin-bottom: 20px;
+            /* Mais espaço */
+            display: flex;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border-left: 6px solid;
+            /* Borda lateral para status */
+            position: relative;
+            overflow: hidden;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* Animações escalonadas para os cards */
+        .challenge-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .challenge-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .challenge-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .challenge-card:nth-child(4) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        .challenge-card.active-challenge {
+            border-left-image: var(--challenge-active-border);
+        }
+
+        .challenge-card.completed-challenge {
+            border-left-image: var(--challenge-completed-border);
+            opacity: 0.85;
+        }
+
+        .challenge-card.completed-challenge .challenge-action button {
+            background: var(--positive-color);
+            cursor: default;
+        }
+
+        .challenge-card.completed-challenge .challenge-icon {
+            filter: grayscale(50%);
+        }
+
+
+        .challenge-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .challenge-icon {
+            width: 60px;
+            /* Maior */
+            height: 60px;
+            border-radius: 18px;
+            /* Mais quadrado-arredondado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 28px;
+            /* Maior */
+            transition: all 0.35s ease;
+        }
+
+        .challenge-card.active-challenge .challenge-icon {
+            background: linear-gradient(135deg, #fff3e0, var(--accent-color));
+            color: #b87333;
+            /* Cor de bronze/ouro escuro */
+            box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .challenge-card.completed-challenge .challenge-icon {
+            background: linear-gradient(135deg, #e8f5e9, #a5d6a7);
+            color: var(--positive-color);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .challenge-card:hover .challenge-icon {
+            transform: rotate(-10deg) scale(1.15);
+        }
+
+        .challenge-info {
+            flex: 1;
+        }
+
+        .challenge-title {
+            font-weight: 700;
+            /* Mais peso */
+            margin-bottom: 6px;
+            font-size: 17px;
+            /* Maior */
+            color: var(--secondary-color);
+        }
+
+        .challenge-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .challenge-reward {
+            font-size: 13px;
+            color: var(--primary-color);
+            font-weight: 600;
+            /* Mais peso */
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .challenge-reward i {
+            color: var(--accent-color);
+        }
+
+        .challenge-action button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            /* Padding ajustado */
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            /* Mais peso */
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.25);
+        }
+
+        .challenge-action button:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.35);
+        }
+
+        .challenge-action button i {
+            margin-right: 6px;
+        }
+
+        .bottom-nav {
+            /* Mesmo estilo da Carteira */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            /* Mesmo estilo da Carteira */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            /* Mesmo estilo da Carteira */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.1), rgba(63, 81, 181, 0.1));
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            border-radius: 16px;
+        }
+
+        .nav-btn.active::before {
+            transform: scale(1);
+        }
+
+        .nav-btn.active {
+            color: #1a237e;
+            transform: translateY(-3px);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            /* Mesmo estilo da Carteira */
+            font-size: 24px;
+            margin-bottom: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-btn.active .nav-icon {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-medal"></i> Desafios Blue Bee</h1>
+            <p>Supere-se, aprenda e ganhe recompensas incríveis!</p>
+            <div class="tabs">
+                <div class="tab active" data-tab="ativos"><i class="fas fa-hourglass-half"></i> Ativos</div>
+                <div class="tab" data-tab="completos"><i class="fas fa-check-double"></i> Completos</div>
+            </div>
+        </div>
+
+        <div class="challenges-list" id="ativos-list">
+            <div class="challenge-card active-challenge">
+                <div class="challenge-icon">🎯</div>
+                <div class="challenge-info">
+                    <div class="challenge-title">Investidor Pioneiro</div>
+                    <div class="challenge-desc">Faça sua primeira simulação de investimento e compre um ativo virtual.
+                    </div>
+                    <div class="challenge-reward"><i class="fas fa-coins"></i> +100 Pontos + Badge Bronze</div>
+                </div>
+                <div class="challenge-action"> <button><i class="fas fa-play"></i> Iniciar</button> </div>
+            </div>
+            <div class="challenge-card active-challenge">
+                <div class="challenge-icon">📈</div>
+                <div class="challenge-info">
+                    <div class="challenge-title">Quiz Mestre: Ações</div>
+                    <div class="challenge-desc">Acerte 5 perguntas seguidas no quiz sobre o mercado de ações.</div>
+                    <div class="challenge-reward"><i class="fas fa-gem"></i> +75 XP + Item Raro</div>
+                </div>
+                <div class="challenge-action"> <button><i class="fas fa-play"></i> Iniciar</button> </div>
+            </div>
+            <div class="challenge-card active-challenge">
+                <div class="challenge-icon">💡</div>
+                <div class="challenge-info">
+                    <div class="challenge-title">Diversificador Estratégico</div>
+                    <div class="challenge-desc">Construa uma carteira virtual com pelo menos 3 tipos de ativos
+                        diferentes (Ex: Ações, FIIs, Renda Fixa).</div>
+                    <div class="challenge-reward"><i class="fas fa-shield-alt"></i> +150 Pontos + Badge Prata</div>
+                </div>
+                <div class="challenge-action"> <button><i class="fas fa-play"></i> Iniciar</button> </div>
+            </div>
+        </div>
+
+        <div class="challenges-list" id="completos-list" style="display: none;">
+            <div class="challenge-card completed-challenge">
+                <div class="challenge-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="challenge-info">
+                    <div class="challenge-title">Boas-vindas Blue Bee</div>
+                    <div class="challenge-desc">Complete o onboarding e defina seu perfil de investidor.</div>
+                    <div class="challenge-reward"><i class="fas fa-gift"></i> +50 Pontos Iniciais</div>
+                </div>
+                <div class="challenge-action"> <button disabled><i class="fas fa-check"></i> Concluído</button> </div>
+            </div>
+        </div>
+
+
+        <div class="bottom-nav">
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-home"></i></div> <span>Início</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div> <span>Carteira</span>
+            </a>
+            <a href="#" class="nav-btn active">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div> <span>Aprender</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-user"></i></div> <span>Perfil</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const activeList = document.getElementById('ativos-list');
+            const completedList = document.getElementById('completos-list');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const challengeCards = document.querySelectorAll('.challenge-card');
+
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (event) {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    addRippleEffect(this, event, true);
+
+                    const tabTarget = this.getAttribute('data-tab');
+                    if (tabTarget === 'ativos') {
+                        activeList.style.display = 'block';
+                        completedList.style.display = 'none';
+                    } else if (tabTarget === 'completos') {
+                        activeList.style.display = 'none';
+                        completedList.style.display = 'block';
+                    }
+                });
+            });
+
+            challengeCards.forEach(card => {
+                card.addEventListener('click', function (event) {
+                    // Evitar que o clique no botão dentro do card acione o ripple do card
+                    if (event.target.closest('button')) return;
+                    addRippleEffect(this, event);
+                });
+            });
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    addRippleEffect(this, e, true);
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimDesafios 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+
+            if (!document.querySelector('style#rippleAnimationDesafios')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationDesafios';
+                style.textContent = `@keyframes rippleAnimDesafios { to { transform: scale(15); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

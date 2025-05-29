@@ -1,242 +1,697 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blue Bee - Questão do Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Desafio do Conhecimento!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-        
+
+        :root {
+            --primary-color: #3f51b5;
+            /* Azul principal */
+            --secondary-color: #1a237e;
+            /* Azul mais escuro */
+            --accent-color: #ffc107;
+            /* Amarelo */
+            --correct-color: #4CAF50;
+            --incorrect-color: #f44336;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-color: #e8ecf4;
+        }
+
         body {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 450px;
-            margin: 0 auto;
-            background-color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
             min-height: 100vh;
-            padding-bottom: 100px;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            /* Para centralizar o container */
+            align-items: center;
+            /* Para centralizar o container */
+            justify-content: center;
+            /* Para centralizar o container */
         }
-        
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 5% 5%, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                radial-gradient(circle at 90% 85%, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            animation: float 28s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-75px) rotate(200deg) scale(1.06);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            /* Ocupa toda a altura */
+            background: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            /* Impede scroll do container principal */
+            animation: zoomInContainer 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes zoomInContainer {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
         .quiz-header {
-            background: linear-gradient(135deg, #1a237e, #303f9f);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: white;
             padding: 20px;
+            box-shadow: 0 5px 20px rgba(63, 81, 181, 0.3);
+            position: relative;
+            z-index: 10;
+            animation: slideDownHeader 0.6s ease-out;
+        }
+
+        @keyframes slideDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .progress-bar-top-outer {
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill-top {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 50%;
+            /* Exemplo */
+            border-radius: 5px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .header-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .quiz-progress {
+
+        .quiz-progress,
+        .quiz-timer {
             font-size: 14px;
-            opacity: 0.8;
+            font-weight: 500;
         }
-        
+
         .quiz-timer {
             display: flex;
             align-items: center;
-            gap: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
+            gap: 6px;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
             border-radius: 20px;
         }
-        
-        .quiz-content {
+
+        .quiz-timer i {
+            font-size: 12px;
+        }
+
+
+        .quiz-content-wrapper {
+            /* Novo wrapper para scroll */
+            flex: 1;
+            overflow-y: auto;
+            /* Scroll apenas nesta área */
             padding: 25px 20px;
         }
-        
+
+        .quiz-content {
+            animation: fadeInContent 0.5s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
         .quiz-topic {
             display: inline-block;
-            background-color: rgba(26, 35, 126, 0.1);
-            color: #1a237e;
-            padding: 5px 10px;
+            background: linear-gradient(135deg, #e8eaf6, #c5cae9);
+            /* Gradiente suave */
+            color: var(--primary-color);
+            padding: 8px 18px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
         }
-        
+
         .quiz-question {
             font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            line-height: 1.4;
+            font-weight: 700;
+            /* Mais peso */
+            margin-bottom: 35px;
+            line-height: 1.55;
+            color: var(--secondary-color);
         }
-        
+
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
         }
-        
+
         .option {
-            padding: 15px;
-            border: 2px solid #eee;
-            border-radius: 15px;
+            padding: 18px 20px;
+            /* Mais padding */
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            /* Mais arredondado */
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
-        }
-        
-        .option:hover {
-            border-color: #1a237e;
-            background-color: rgba(26, 35, 126, 0.05);
-        }
-        
-        .option.selected {
-            border-color: #1a237e;
-            background-color: rgba(26, 35, 126, 0.1);
-        }
-        
-        .quiz-footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 450px;
-            background-color: white;
-            padding: 15px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .quiz-btn {
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .quiz-btn-outline {
-            background-color: transparent;
-            border: 2px solid #1a237e;
-            color: #1a237e;
-        }
-        
-        .quiz-btn-outline:hover {
-            background-color: rgba(26, 35, 126, 0.1);
-        }
-        
-        .quiz-btn-primary {
-            background-color: #1a237e;
-            border: 2px solid #1a237e;
-            color: white;
-        }
-        
-        .quiz-btn-primary:hover {
-            background-color: #303f9f;
-            border-color: #303f9f;
-        }
-        
-        .quiz-btn-primary:disabled {
-            background-color: #ccc;
-            border-color: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .explanation {
-            background-color: #f9f9f9;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-        }
-        
-        .explanation-title {
-            font-weight: bold;
-            color: #1a237e;
-            margin-bottom: 10px;
-        }
-        
-        .result-indicator {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            background-color: #f4f6fc;
+            /* Cor de hover mais sutil */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.1);
+        }
+
+        .option.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #e8eaf6, #c5cae9);
+            color: var(--secondary-color);
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.2);
+        }
+
+        .option.correct {
+            border-color: var(--correct-color) !important;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
+            color: #2e7d32 !important;
+        }
+
+        .option.incorrect {
+            border-color: var(--incorrect-color) !important;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2) !important;
+            color: #c62828 !important;
+        }
+
+        .option.disabled {
+            /* Para desabilitar após resposta */
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+
+        .option-letter {
+            width: 35px;
+            /* Maior */
+            height: 35px;
+            border-radius: 10px;
+            /* Mais arredondado */
+            background-color: #e8ecf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            /* Mais peso */
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-letter {
+            background-color: var(--primary-color);
+            color: white;
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .option.correct .option-letter {
+            background-color: var(--correct-color) !important;
+            color: white !important;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: var(--incorrect-color) !important;
+            color: white !important;
+        }
+
+        .explanation {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            /* Mais padding */
+            margin-top: 35px;
+            display: none;
+            /* Controlado por JS */
+            border-top: 6px solid;
+            /* Borda superior colorida */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            animation: fadeInExplanation 0.5s ease-out;
+        }
+
+        @keyframes fadeInExplanation {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation.correct {
+            border-color: var(--correct-color);
+        }
+
+        .explanation.incorrect {
+            border-color: var(--incorrect-color);
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 15px;
-            font-weight: bold;
         }
-        
-        .correct {
-            color: #4caf50;
+
+        .explanation-icon {
+            font-size: 24px;
         }
-        
-        .incorrect {
-            color: #f44336;
+
+        .result-indicator {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .result-indicator.correct {
+            color: var(--correct-color);
+        }
+
+        .result-indicator.incorrect {
+            color: var(--incorrect-color);
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .explanation p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+
+        .quiz-footer {
+            background-color: white;
+            padding: 18px 20px;
+            /* Mais padding */
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            /* Para o z-index funcionar com o header sticky */
+            z-index: 5;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quiz-btn-outline {
+            background-color: transparent;
+            border-color: #bdc3c7;
+            color: #7f8c8d;
+        }
+
+        .quiz-btn-outline:hover {
+            background-color: #ecf0f1;
+            border-color: #95a5a6;
+            color: #34495e;
+        }
+
+        .quiz-btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.25);
+        }
+
+        .quiz-btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.35);
+        }
+
+        .quiz-btn-primary:disabled {
+            background: #dcdde1;
+            border-color: #dcdde1;
+            color: #aaa;
+            cursor: not-allowed;
+            box-shadow: none;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="quiz-header">
-            <div class="quiz-progress">Questão 5 de 10</div>
-            <div class="quiz-timer">
-                ⏱️ <span>00:45</span>
+            <div class="progress-bar-top-outer">
+                <div class="progress-fill-top" id="progressFill"></div>
+            </div>
+            <div class="header-info">
+                <div class="quiz-progress"><i class="fas fa-list-ol" style="margin-right: 5px;"></i>Questão <span
+                        id="currentQuestion">5</span> de <span id="totalQuestions">10</span></div>
+                <div class="quiz-timer"> <i class="far fa-clock"></i> <span id="timerDisplay">00:45</span> </div>
             </div>
         </div>
-        
-        <div class="quiz-content">
-            <div class="quiz-topic">Fundos Imobiliários</div>
-            <div class="quiz-question">
-                Qual é a principal vantagem de investir em Fundos Imobiliários (FIIs) em comparação com a compra direta de imóveis?
-            </div>
-            
-            <div class="options-container">
-                <div class="option">
-                    A possibilidade de investir pequenos valores e ter acesso a diversos imóveis
+
+        <div class="quiz-content-wrapper">
+            <div class="quiz-content">
+                <div class="quiz-topic">Fundos Imobiliários (FIIs)</div>
+                <div class="quiz-question" id="questionText"> Qual é a principal vantagem de investir em FIIs em
+                    comparação com a compra direta de imóveis? </div>
+                <div class="options-container" id="optionsContainer">
+                    <div class="option" data-value="A" data-answer-id="1"> <span class="option-letter">A</span> <span
+                            class="option-text">A possibilidade de investir pequenos valores e ter acesso a diversos
+                            imóveis</span> </div>
+                    <div class="option" data-value="B" data-answer-id="2"> <span class="option-letter">B</span> <span
+                            class="option-text">A liquidez diária, já que as cotas são negociadas na bolsa de
+                            valores</span> </div>
+                    <div class="option" data-value="C" data-answer-id="3"> <span class="option-letter">C</span> <span
+                            class="option-text">A isenção total de impostos sobre os rendimentos</span> </div>
+                    <div class="option" data-value="D" data-answer-id="4"> <span class="option-letter">D</span> <span
+                            class="option-text">A garantia de retorno fixo mensal independente do mercado</span> </div>
                 </div>
-                <div class="option selected">
-                    A liquidez diária, já que as cotas são negociadas na bolsa de valores
+                <div class="explanation" id="explanationBox">
+                    <div class="explanation-header">
+                        <span class="explanation-icon" id="explanationIcon"></span>
+                        <div class="result-indicator" id="resultIndicator"></div>
+                    </div>
+                    <div class="explanation-title">Explicação Detalhada:</div>
+                    <p id="explanationTextContent">Uma das principais vantagens dos FIIs é a liquidez, pois as cotas são
+                        negociadas na bolsa de valores como ações, permitindo comprar e vender a qualquer momento
+                        durante o pregão, diferentemente de um imóvel físico que pode demorar meses para ser vendido.
+                    </p>
                 </div>
-                <div class="option">
-                    A isenção total de impostos sobre os rendimentos
-                </div>
-                <div class="option">
-                    A garantia de retorno fixo mensal independente do mercado
-                </div>
-            </div>
-            
-            <div class="explanation">
-                <div class="result-indicator correct">
-                    ✓ Resposta Correta
-                </div>
-                <div class="explanation-title">Explicação:</div>
-                <p>Uma das principais vantagens dos FIIs é a liquidez, pois as cotas são negociadas na bolsa de valores como ações, permitindo comprar e vender a qualquer momento durante o pregão, diferentemente de um imóvel físico que pode demorar meses para ser vendido.</p>
             </div>
         </div>
-        
+
         <div class="quiz-footer">
-            <button class="quiz-btn quiz-btn-outline">Pular</button>
-            <button class="quiz-btn quiz-btn-primary">Confirmar</button>
+            <button class="quiz-btn quiz-btn-outline" id="skipBtn"><i class="fas fa-forward"></i> Pular</button>
+            <button class="quiz-btn quiz-btn-primary" id="confirmBtn" disabled><i class="fas fa-check"></i>
+                Confirmar</button>
         </div>
     </div>
 
     <script>
-        // Simples interação para demonstração
-        const options = document.querySelectorAll('.option');
-        const confirmBtn = document.querySelector('.quiz-btn-primary');
-        const explanation = document.querySelector('.explanation');
-        
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                options.forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                confirmBtn.disabled = false;
+        document.addEventListener('DOMContentLoaded', function () {
+            const optionsElements = document.querySelectorAll('.option');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            const explanationBox = document.getElementById('explanationBox');
+            const resultIndicator = document.getElementById('resultIndicator');
+            const explanationIcon = document.getElementById('explanationIcon');
+            const explanationTextContent = document.getElementById('explanationTextContent'); // Se precisar mudar o texto dinamicamente
+
+            // Elementos do header para atualização
+            const progressFill = document.getElementById('progressFill');
+            const currentQuestionEl = document.getElementById('currentQuestion');
+            const totalQuestionsEl = document.getElementById('totalQuestions');
+            const timerDisplay = document.getElementById('timerDisplay');
+
+            let selectedOption = null;
+            let questionAnswered = false;
+            let currentQuestionNumber = 5; // Exemplo
+            const totalQuestionsNumber = 10; // Exemplo
+            let timeLeft = 45; // Exemplo em segundos
+            let timerInterval;
+
+            // Simulação de dados da questão (em um app real, viria do backend)
+            const correctAnswerValue = 'B'; // Opção correta para a pergunta de exemplo
+            const correctAnswerId = '2'; // ID da resposta correta
+
+            function startTimer() {
+                clearInterval(timerInterval); // Limpa timer anterior
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+                    const seconds = String(timeLeft % 60).padStart(2, '0');
+                    timerDisplay.textContent = `${minutes}:${seconds}`;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        alert('Tempo esgotado!');
+                        // Auto-submeter ou mostrar resposta
+                        if (!questionAnswered) handleConfirm();
+                    }
+                }, 1000);
+            }
+
+
+            function updateHeader() {
+                currentQuestionEl.textContent = currentQuestionNumber;
+                totalQuestionsEl.textContent = totalQuestionsNumber;
+                progressFill.style.width = `${(currentQuestionNumber / totalQuestionsNumber) * 100}%`;
+            }
+
+
+            optionsElements.forEach(option => {
+                option.addEventListener('click', function () {
+                    if (questionAnswered) return;
+
+                    optionsElements.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedOption = this;
+                    confirmBtn.disabled = false;
+                    addRippleEffect(this, event);
+                });
             });
-        });
-        
-        confirmBtn.addEventListener('click', () => {
-            explanation.style.display = 'block';
-            confirmBtn.textContent = 'Próxima';
-            confirmBtn.onclick = () => alert('Próxima questão carregada...');
+
+            function handleConfirm() {
+                if (!selectedOption || questionAnswered) return;
+                questionAnswered = true;
+                confirmBtn.disabled = true; // Desabilita temporariamente até virar "Próxima"
+                clearInterval(timerInterval); // Para o timer
+
+
+                const isCorrect = selectedOption.getAttribute('data-value') === correctAnswerValue;
+
+                optionsElements.forEach(opt => {
+                    opt.classList.add('disabled'); // Desabilita todas as opções
+                    if (opt.getAttribute('data-value') === correctAnswerValue) {
+                        opt.classList.add('correct');
+                        if (opt === selectedOption) { // A opção selecionada é a correta
+                            opt.innerHTML += ' <i class="fas fa-check-circle" style="color: var(--correct-color); margin-left: auto;"></i>';
+                        }
+                    } else if (opt === selectedOption) { // A opção selecionada é incorreta
+                        opt.classList.add('incorrect');
+                        opt.innerHTML += ' <i class="fas fa-times-circle" style="color: var(--incorrect-color); margin-left: auto;"></i>';
+                    }
+                });
+
+                if (isCorrect) {
+                    resultIndicator.textContent = 'Resposta Correta!';
+                    resultIndicator.className = 'result-indicator correct';
+                    explanationIcon.innerHTML = '<i class="fas fa-check-circle" style="color: var(--correct-color);"></i>';
+                    explanationBox.className = 'explanation correct';
+                    // Aqui você pode adicionar lógica para pontos, etc.
+                } else {
+                    resultIndicator.textContent = 'Resposta Incorreta!';
+                    resultIndicator.className = 'result-indicator incorrect';
+                    explanationIcon.innerHTML = '<i class="fas fa-times-circle" style="color: var(--incorrect-color);"></i>';
+                    explanationBox.className = 'explanation incorrect';
+                }
+
+                explanationBox.style.display = 'block';
+                // Rolar para a explicação
+                explanationBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+
+                confirmBtn.innerHTML = '<i class="fas fa-arrow-right"></i> Próxima Questão';
+                confirmBtn.disabled = false; // Reabilita para a próxima ação
+                confirmBtn.onclick = loadNextQuestion; // Muda a ação do botão
+
+                skipBtn.style.display = 'none'; // Esconde o botão pular
+            }
+
+            confirmBtn.addEventListener('click', () => {
+                handleConfirm();
+                addRippleEffect(confirmBtn, event);
+            });
+
+            skipBtn.addEventListener('click', () => {
+                alert('Questão pulada!');
+                loadNextQuestion(); // Ou outra lógica para pular
+                addRippleEffect(skipBtn, event);
+            });
+
+            function loadNextQuestion() {
+                // Lógica para carregar a próxima questão
+                // Resetar estados, carregar novos dados, etc.
+                if (currentQuestionNumber < totalQuestionsNumber) {
+                    currentQuestionNumber++;
+                    timeLeft = 45; // Reseta o tempo para a próxima questão (exemplo)
+                    questionAnswered = false;
+                    selectedOption = null;
+
+                    // Resetar opções
+                    optionsElements.forEach(opt => {
+                        opt.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+                        // Remove ícones de feedback se foram adicionados
+                        const feedbackIcon = opt.querySelector('i.fas.fa-check-circle, i.fas.fa-times-circle');
+                        if (feedbackIcon) feedbackIcon.remove();
+                    });
+
+                    explanationBox.style.display = 'none';
+                    confirmBtn.innerHTML = '<i class="fas fa-check"></i> Confirmar';
+                    confirmBtn.disabled = true;
+                    confirmBtn.onclick = null; // Remove o handler antigo para evitar chamadas múltiplas
+                    confirmBtn.addEventListener('click', handleConfirmClick); // Adiciona de volta o handler original
+
+                    skipBtn.style.display = 'flex'; // Mostra o botão pular novamente
+
+                    // Simular carregamento de nova questão
+                    document.getElementById('questionText').textContent = "Qual o principal índice da bolsa de valores brasileira?";
+                    // Atualizar opções, correctAnswerValue, etc.
+
+                    updateHeader();
+                    startTimer();
+                } else {
+                    alert('Quiz finalizado! Ver resultados...');
+                    // Redirecionar para tela de resultados
+                }
+            }
+
+            function handleConfirmClick(event) { // Wrapper para addRippleEffect
+                handleConfirm();
+                addRippleEffect(confirmBtn, event);
+            }
+            confirmBtn.addEventListener('click', handleConfirmClick); // Handler inicial
+
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.4)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnim 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+
+            if (!document.querySelector('style#rippleAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimation';
+                style.textContent = `@keyframes rippleAnim { to { transform: scale(10); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+
+            // Inicialização
+            updateHeader();
+            startTimer();
         });
     </script>
 </body>
+
 </html>

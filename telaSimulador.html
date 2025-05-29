@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Simulador de Investimentos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            /* Amarelo mantido para o botão principal */
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+            --header-gradient: linear-gradient(135deg, #2962FF 0%, #448AFF 100%);
+            /* Azul mais vibrante para o header */
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 22% 65%, rgba(255, 255, 255, 0.06) 2px, transparent 2px),
+                radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.04) 3px, transparent 3px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+            animation: float 26s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-66px) rotate(160deg) scale(1.03);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 25px 20px;
+            position: relative;
+            /* Mudado de sticky para relative */
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(68, 138, 255, 0.35);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header::before {
+            /* Efeito de brilho sutil */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShineSimulador 4.5s ease-in-out infinite 0.5s;
+            /* Delay para não competir com entrada */
+        }
+
+        @keyframes headerShineSimulador {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-wrapper {
+            /* Novo wrapper para o formulário para animação */
+            padding: 25px 20px;
+            animation: fadeInUpForm 0.7s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpForm {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            padding: 30px 25px;
+            /* Mais padding interno */
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 15px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fd 100%);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15), 0 5px 15px rgba(63, 81, 181, 0.1);
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+            font-weight: 500;
+            color: var(--text-dark);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .input-wrapper select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%233f51b5" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: calc(100% - 15px);
+            background-position-y: center;
+            cursor: pointer;
+        }
+
+        .input-currency {
+            padding: 16px 20px;
+            background-color: #e8ecf4;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .simulate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent-color), #ffa000);
+            color: var(--secondary-color);
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 15px;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .simulate-btn:hover {
+            background: linear-gradient(135deg, #ffd54f, var(--accent-color));
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 193, 7, 0.5);
+        }
+
+        .simulate-btn:disabled {
+            background: #ffe0b2;
+            color: #eda145;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+
+        .results-wrapper {
+            /* Novo wrapper para resultados para animação */
+            padding: 0 20px 25px;
+            margin-top: 10px;
+            animation: fadeInUpResults 0.7s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpResults {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-container {
+            background: var(--card-bg);
+            padding: 30px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .chart-placeholder {
+            height: 220px;
+            background-color: #eef2f9;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            flex-direction: column;
+            border: 1px dashed var(--border-color);
+        }
+
+        .chart-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .chart-placeholder span {
+            font-weight: 500;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .summary-card {
+            background-color: var(--light-bg);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .summary-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .summary-card hr {
+            margin: 18px 0;
+            border: 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .summary-total .summary-label {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 17px;
+        }
+
+        .summary-total .summary-value {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1><i class="fas fa-magic" style="margin-right: 8px;"></i>Simulador de Investimentos</h1>
+        </div>
+
+        <div class="form-wrapper">
+            <div class="form-container">
+                <div class="input-group">
+                    <label for="initialValue">Valor Inicial (R$)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="initialValue" placeholder="Ex: 1000">
+                        <div class="input-currency">BRL</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="monthlyValue">Aporte Mensal (R$)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="monthlyValue" placeholder="Ex: 200">
+                        <div class="input-currency">BRL</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="period">Período (Anos)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="period" placeholder="Ex: 5">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="interestRate">Rentabilidade Anual Estimada (%)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="interestRate" placeholder="Ex: 12" step="0.1">
+                        <div class="input-currency">% a.a.</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="indexType">Ou escolha um Indexador Base:</label>
+                    <div class="input-wrapper">
+                        <select id="indexType">
+                            <option value="">Nenhum (usar rentabilidade acima)</option>
+                            <option value="cdi" data-rate="11.25">CDI (Ex: 11.25% a.a.)</option>
+                            <option value="ipca" data-rate="6.5">IPCA + X (Ex: IPCA + 6.5% a.a.)</option>
+                            <option value="selic" data-rate="10.75">SELIC (Ex: 10.75% a.a.)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="simulate-btn" id="simulateBtn"><i class="fas fa-cogs"
+                        style="margin-right: 8px;"></i>Simular Projeção</button>
+            </div>
+        </div>
+
+        <div class="results-wrapper" id="resultsSection" style="display: none;">
+            <div class="results-container">
+                <div class="section-title"><i class="fas fa-chart-area"></i>Sua Projeção de Crescimento</div>
+                <div class="chart-placeholder">
+                    <i class="fas fa-tasks"></i>
+                    <span>Visualização Gráfica da Projeção</span>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Investido</span>
+                        <span class="summary-value" id="totalInvested">R$ 0,00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Juros Acumulados</span>
+                        <span class="summary-value" id="totalInterest">R$ 0,00</span>
+                    </div>
+                    <hr>
+                    <div class="summary-item summary-total">
+                        <span class="summary-label">Valor Final Estimado</span>
+                        <span class="summary-value" id="finalAmount">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const simulateBtn = document.getElementById('simulateBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const indexTypeSelect = document.getElementById('indexType');
+            const interestRateInput = document.getElementById('interestRate');
+
+            const initialValueInput = document.getElementById('initialValue');
+            const monthlyValueInput = document.getElementById('monthlyValue');
+            const periodInput = document.getElementById('period');
+
+            const totalInvestedEl = document.getElementById('totalInvested');
+            const totalInterestEl = document.getElementById('totalInterest');
+            const finalAmountEl = document.getElementById('finalAmount');
+
+            if (indexTypeSelect && interestRateInput) {
+                indexTypeSelect.addEventListener('change', function () {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const rate = selectedOption.getAttribute('data-rate');
+                    if (rate) {
+                        interestRateInput.value = rate;
+                        interestRateInput.disabled = true;
+                    } else {
+                        interestRateInput.disabled = false;
+                    }
+                });
+            }
+
+
+            if (simulateBtn) {
+                simulateBtn.addEventListener('click', function (event) {
+                    addRippleEffect(this, event);
+
+                    // Coleta dos valores
+                    const P = parseFloat(initialValueInput.value) || 0; // Principal
+                    const M = parseFloat(monthlyValueInput.value) || 0; // Aporte Mensal
+                    const t_anos = parseFloat(periodInput.value) || 0; // Período em anos
+                    let i_anual = parseFloat(interestRateInput.value) || 0; // Taxa de juros anual em %
+
+                    if (t_anos === 0 || i_anual === 0) {
+                        alert("Por favor, preencha o período e a taxa de rentabilidade.");
+                        return;
+                    }
+
+                    const i_mensal = Math.pow((1 + i_anual / 100), 1 / 12) - 1; // Taxa mensal efetiva
+                    const n = t_anos * 12; // Número de meses
+
+                    let valorFinalPrincipal = P * Math.pow((1 + i_mensal), n);
+                    let valorFinalAportes = 0;
+                    if (i_mensal > 0) {
+                        valorFinalAportes = M * ((Math.pow((1 + i_mensal), n) - 1) / i_mensal) * (1 + i_mensal);
+                    } else { // Caso a taxa seja 0
+                        valorFinalAportes = M * n;
+                    }
+
+                    const valorFinalTotal = valorFinalPrincipal + valorFinalAportes;
+                    const totalAplicado = P + (M * n);
+                    const jurosTotais = valorFinalTotal - totalAplicado;
+
+                    // Exibir resultados
+                    totalInvestedEl.textContent = `R$ ${totalAplicado.toFixed(2).replace('.', ',')}`;
+                    totalInterestEl.textContent = `R$ ${jurosTotais.toFixed(2).replace('.', ',')}`;
+                    finalAmountEl.textContent = `R$ ${valorFinalTotal.toFixed(2).replace('.', ',')}`;
+
+                    resultsSection.style.display = 'block';
+                    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            }
+
+            window.goBack = function () { alert('Voltar...'); }
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimSimulador 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+
+            if (!document.querySelector('style#rippleAnimationSimulador')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationSimulador';
+                style.textContent = `@keyframes rippleAnimSimulador { to { transform: scale(15); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

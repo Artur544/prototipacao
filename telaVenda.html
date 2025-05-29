@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Vender Ativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color-sell: #e53935;
+            /* Vermelho principal para venda */
+            --secondary-color-sell: #c62828;
+            /* Vermelho mais escuro */
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 12% 70%, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.03) 3px, transparent 3px),
+                radial-gradient(circle at 40% 55%, rgba(255, 255, 255, 0.04) 2px, transparent 2px);
+            animation: float 21s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-62px) rotate(185deg) scale(1.03);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color-sell) 0%, var(--secondary-color-sell) 100%);
+            color: white;
+            padding: 25px 20px;
+            position: relative;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(229, 57, 53, 0.35);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header::before {
+            /* Efeito de brilho sutil */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShineSell 4.5s ease-in-out infinite;
+        }
+
+        @keyframes headerShineSell {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .asset-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .asset-icon-header {
+            font-size: 16px;
+        }
+
+        .current-price-header {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .form-container {
+            padding: 25px;
+            animation: fadeInUpForm 0.6s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpForm {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-card {
+            background: #fff3e0;
+            /* Tom laranja claro para holdings */
+            border: 1px solid #ffe0b2;
+            color: #e65100;
+            /* Laranja escuro para texto */
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(255, 224, 178, 0.5);
+        }
+
+        .info-label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .info-value {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary-color-sell);
+        }
+
+        .input-wrapper {
+            display: flex;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fd 100%);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary-color-sell);
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15), 0 5px 15px rgba(229, 57, 53, 0.1);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            background: transparent;
+            color: var(--text-dark);
+        }
+
+        .input-unit {
+            /* Para "cotas" */
+            padding: 16px 20px;
+            background-color: #e8ecf4;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+
+        .quick-amounts {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .quick-amount {
+            flex: 1;
+            padding: 10px;
+            background-color: #ffebee;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--secondary-color-sell);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quick-amount:hover,
+        .quick-amount.active {
+            background-color: #ffcdd2;
+            border-color: var(--primary-color-sell);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.15);
+        }
+
+        .summary-card {
+            background: #f8f9fd;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary-color-sell);
+            font-size: 17px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-label {
+            color: var(--text-light);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .summary-card hr {
+            margin: 12px 0;
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .total-value .summary-value {
+            color: var(--primary-color-sell);
+            font-size: 16px;
+        }
+
+
+        .confirm-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary-color-sell) 0%, var(--secondary-color-sell) 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(229, 57, 53, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .confirm-btn:hover {
+            background: linear-gradient(135deg, var(--secondary-color-sell) 0%, var(--primary-color-sell) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(229, 57, 53, 0.45);
+        }
+
+        .confirm-btn:disabled {
+            background: #ef9a9a;
+            /* Vermelho claro desabilitado */
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1>Vender Ativo</h1>
+            <div class="asset-info-header">
+                <div class="asset-icon-header">📈</div> <span>PETR4</span>
+            </div>
+            <div class="current-price-header">Preço Atual: R$ 32,15</div>
+        </div>
+
+        <div class="form-container">
+            <div class="info-card">
+                <div class="info-label">Você Possui Atualmente</div>
+                <div class="info-value">38 Cotas (Valor Estimado: R$ 1.221,70)</div>
+            </div>
+
+            <div class="input-group">
+                <label for="quantity">Quantidade de cotas a vender</label>
+                <div class="input-wrapper">
+                    <input type="number" id="quantity" placeholder="0" value="10">
+                    <div class="input-unit">cotas</div>
+                </div>
+                <div class="quick-amounts">
+                    <button class="quick-amount" data-percent="10">10</button>
+                    <button class="quick-amount" data-percent="25">25%</button>
+                    <button class="quick-amount" data-percent="50">50%</button>
+                    <button class="quick-amount" data-percent="100">Tudo</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="estimatedValue">Valor Estimado da Venda</label>
+                <div class="input-wrapper">
+                    <input type="text" id="estimatedValue" placeholder="R$ 0,00" value="R$ 321,50" readonly>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-title">Resumo da Operação de Venda</div>
+                <div class="summary-item"> <span class="summary-label">Quantidade a Vender</span> <span
+                        class="summary-value">10 Cotas</span> </div>
+                <div class="summary-item"> <span class="summary-label">Preço Médio por Cota</span> <span
+                        class="summary-value">R$ 32,15</span> </div>
+                <div class="summary-item"> <span class="summary-label">Taxas e Custos Estimados</span> <span
+                        class="summary-value">- R$ 0,64</span> </div>
+                <hr>
+                <div class="summary-item total-value"> <span class="summary-label">Valor Líquido a Receber</span> <span
+                        class="summary-value">R$ 320,86</span> </div>
+            </div>
+
+            <button class="confirm-btn" id="confirmSellBtn"><i class="fas fa-hand-holding-usd"
+                    style="margin-right: 8px;"></i>Confirmar Venda</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const quantityInput = document.getElementById('quantity');
+            const estimatedValueInput = document.getElementById('estimatedValue');
+            const quickAmountBtns = document.querySelectorAll('.quick-amount');
+            const confirmSellBtn = document.getElementById('confirmSellBtn');
+
+            const currentPrice = 32.15; // Preço do ativo (exemplo)
+            const totalUserShares = 38; // Total de cotas do usuário (exemplo)
+
+            function calculateEstimatedValue(qty) {
+                if (isNaN(qty) || qty <= 0) {
+                    estimatedValueInput.value = 'R$ 0,00';
+                    return;
+                }
+                const total = qty * currentPrice;
+                // Adicionar lógica de taxas aqui se necessário
+                estimatedValueInput.value = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            }
+
+            if (quantityInput) {
+                quantityInput.addEventListener('input', function () {
+                    let qty = parseInt(this.value, 10);
+                    if (qty > totalUserShares) {
+                        qty = totalUserShares;
+                        this.value = totalUserShares; // Corrige o input
+                    }
+                    calculateEstimatedValue(qty);
+                });
+                calculateEstimatedValue(parseInt(quantityInput.value, 10)); // Cálculo inicial
+            }
+
+
+            quickAmountBtns.forEach(btn => {
+                btn.addEventListener('click', function (event) {
+                    quickAmountBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const percent = this.getAttribute('data-percent');
+                    let qtyToSet = 0;
+
+                    if (percent === "100") {
+                        qtyToSet = totalUserShares;
+                    } else if (percent === "10") { // Botão "10"
+                        qtyToSet = 10 > totalUserShares ? totalUserShares : 10;
+                    } else {
+                        qtyToSet = Math.floor(totalUserShares * (parseInt(percent, 10) / 100));
+                    }
+
+                    if (quantityInput) {
+                        quantityInput.value = qtyToSet;
+                        calculateEstimatedValue(qtyToSet);
+                    }
+                    addRippleEffect(this, event, true);
+                });
+            });
+
+            if (confirmSellBtn) {
+                confirmSellBtn.addEventListener('click', function (event) {
+                    addRippleEffect(this, event);
+                    // Lógica de confirmação da venda
+                    alert('Venda confirmada! (Simulação)');
+                });
+            }
+
+            window.goBack = function () { alert('Voltar...'); }
+
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimSell 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+
+            if (!document.querySelector('style#rippleAnimationSell')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationSell';
+                style.textContent = `@keyframes rippleAnimSell { to { transform: scale(10); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>

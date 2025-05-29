@@ -1,225 +1,494 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Blue Bee - Explorar Ativos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
-        
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.07) 2px, transparent 2px),
+                radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.05) 3px, transparent 3px),
+                radial-gradient(circle at 45% 75%, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
+            animation: float 22s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-60px) rotate(170deg) scale(1.03);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
         .container {
             max-width: 450px;
             margin: 0 auto;
-            background-color: white;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.15);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+
         .header {
-            background: linear-gradient(135deg, #1a237e, #303f9f);
+            background: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #5c6bc0 100%);
             color: white;
-            padding: 20px;
+            padding: 25px 20px 20px;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
+            /* Aumentado z-index */
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 10px 30px rgba(63, 81, 181, 0.3);
+            animation: fadeInDownHeader 0.7s ease-out;
         }
-        
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .header h1 {
-            font-size: 22px;
-            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        
+
         .search-bar {
             display: flex;
-            background-color: white;
-            border-radius: 20px;
-            padding: 8px 15px;
-            margin-bottom: 15px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            /* Fundo mais sólido */
+            border-radius: 25px;
+            padding: 12px 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
-        
+
+        .search-bar:focus-within {
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-bar i {
+            color: #764ba2;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
         .search-bar input {
             flex: 1;
             border: none;
             outline: none;
-            padding: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            background: transparent;
+            color: #333;
         }
-        
-        .search-bar button {
-            background: none;
-            border: none;
-            color: #1a237e;
-            cursor: pointer;
+
+        .search-bar input::placeholder {
+            color: #aaa;
+            font-weight: 400;
         }
-        
+
         .filter-container {
             display: flex;
             overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 10px;
+            gap: 12px;
+            padding: 5px 2px 10px 2px;
+            /* Pequeno padding lateral para visualização do scroll */
+            scrollbar-width: thin;
+            /* Firefox */
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            /* Firefox */
         }
-        
+
+        .filter-container::-webkit-scrollbar {
+            height: 6px;
+            /* Altura da barra de rolagem */
+        }
+
+        .filter-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .filter-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            /* Espaço em volta do thumb */
+        }
+
+
         .filter-chip {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            /* Mais sutil */
+            backdrop-filter: blur(8px);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 10px 20px;
             border-radius: 20px;
             font-size: 14px;
+            font-weight: 500;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
+        .filter-chip:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
         .filter-chip.active {
-            background-color: #ffc107;
+            background: #ffc107;
             color: #1a237e;
+            border-color: #ffc107;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
         }
-        
+
         .assets-list {
-            padding: 15px;
+            padding: 20px;
         }
-        
+
         .asset-card {
             display: flex;
             justify-content: space-between;
-            padding: 15px;
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-            transition: transform 0.3s;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fd 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 18px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUpList 0.5s ease-out forwards;
+            opacity: 0;
         }
-        
+
+        /* Animações escalonadas para os cards */
+        .asset-card:nth-child(1) {
+            animation-delay: 0.15s;
+        }
+
+        .asset-card:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .asset-card:nth-child(3) {
+            animation-delay: 0.35s;
+        }
+
+        .asset-card:nth-child(4) {
+            animation-delay: 0.45s;
+        }
+
+        .asset-card:nth-child(5) {
+            animation-delay: 0.55s;
+        }
+
+
+        @keyframes fadeInUpList {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .asset-card::before {
+            /* Efeito de brilho */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s ease-in-out;
+        }
+
         .asset-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
         }
-        
+
+        .asset-card:hover::before {
+            left: 150%;
+        }
+
         .asset-info {
             display: flex;
             align-items: center;
         }
-        
+
         .asset-icon {
             width: 50px;
             height: 50px;
-            background-color: rgba(26, 35, 126, 0.1);
-            border-radius: 50%;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            color: #1a237e;
-            font-size: 20px;
+            margin-right: 18px;
+            font-size: 24px;
+            color: white;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
-        
+
+        .asset-card:hover .asset-icon {
+            transform: rotateY(15deg) scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .icon-petr4 {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+        }
+
+        .icon-hglg11 {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .icon-bova11 {
+            background: linear-gradient(135deg, #ffc107, #d39e00);
+        }
+
+        .icon-cdb {
+            background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        }
+
+        .icon-btc {
+            background: linear-gradient(135deg, #fd7e14, #c65e09);
+        }
+
         .asset-details {
             flex: 1;
         }
-        
+
         .asset-name {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 17px;
+            color: #1a237e;
         }
-        
+
         .asset-type {
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 5px;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
         }
-        
+
         .asset-risk {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
         }
-        
+
+        .asset-risk i {
+            font-size: 10px;
+        }
+
+        /* Ícone dentro da tag de risco */
         .risk-low {
-            background-color: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #388e3c;
         }
-        
+
         .risk-medium {
-            background-color: rgba(255, 152, 0, 0.2);
-            color: #ff9800;
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #f57c00;
         }
-        
+
         .risk-high {
-            background-color: rgba(244, 67, 54, 0.2);
-            color: #f44336;
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #d32f2f;
         }
-        
+
         .asset-value {
             text-align: right;
         }
-        
+
         .asset-price {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-size: 16px;
+            color: #1a237e;
         }
-        
+
         .asset-change {
             font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        
+
         .change-positive {
-            color: #4caf50;
+            color: #43a047;
         }
-        
+
         .change-negative {
-            color: #f44336;
+            color: #e53935;
         }
-        
+
         .bottom-nav {
+            /* Mesmo estilo da Carteira */
             position: fixed;
             bottom: 0;
-            width: 100%;
+            left: 0;
+            right: 0;
             max-width: 450px;
-            background-color: white;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
             display: flex;
             justify-content: space-around;
             padding: 15px 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+            /* Aumentado z-index */
         }
-        
+
         .nav-btn {
+            /* Mesmo estilo da Carteira */
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #666;
+            color: #999;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .nav-btn::before {
+            /* Mesmo estilo da Carteira */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.1), rgba(63, 81, 181, 0.1));
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            border-radius: 16px;
+        }
+
+        .nav-btn.active::before {
+            transform: scale(1);
+        }
+
         .nav-btn.active {
             color: #1a237e;
+            transform: translateY(-3px);
         }
-        
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
         .nav-icon {
-            font-size: 20px;
-            margin-bottom: 3px;
+            /* Mesmo estilo da Carteira */
+            font-size: 24px;
+            margin-bottom: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-btn.active .nav-icon {
+            transform: scale(1.2);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>Explorar Ativos</h1>
+            <h1><i class="fas fa-compass" style="margin-right: 10px;"></i>Explorar Ativos</h1>
             <div class="search-bar">
-                <input type="text" placeholder="Buscar ativos...">
-                <button>🔍</button>
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar por nome ou ticker...">
             </div>
             <div class="filter-container">
                 <button class="filter-chip active">Todos</button>
@@ -228,106 +497,183 @@
                 <button class="filter-chip">ETFs</button>
                 <button class="filter-chip">Renda Fixa</button>
                 <button class="filter-chip">Cripto</button>
-                <button class="filter-chip">Baixo Risco</button>
-                <button class="filter-chip">Alto Retorno</button>
+                <button class="filter-chip"><i class="fas fa-shield-alt" style="margin-right: 5px;"></i>Baixo
+                    Risco</button>
+                <button class="filter-chip"><i class="fas fa-rocket" style="margin-right: 5px;"></i>Alto
+                    Retorno</button>
             </div>
         </div>
-        
+
         <div class="assets-list">
-            <div class="asset-card">
+            <div class="asset-card" data-asset-id="PETR4">
                 <div class="asset-info">
-                    <div class="asset-icon">📈</div>
+                    <div class="asset-icon icon-petr4"><i class="fas fa-industry"></i></div>
                     <div class="asset-details">
                         <div class="asset-name">PETR4</div>
-                        <div class="asset-type">Petróleo Brasileiro S.A.</div>
-                        <span class="asset-risk risk-medium">Risco Médio</span>
+                        <div class="asset-type">Petrobras PN</div>
+                        <span class="asset-risk risk-medium"><i class="fas fa-exclamation-triangle"></i> Risco
+                            Médio</span>
                     </div>
                 </div>
                 <div class="asset-value">
                     <div class="asset-price">R$ 32,15</div>
-                    <div class="asset-change change-positive">+1,2%</div>
+                    <div class="asset-change change-positive"><i class="fas fa-arrow-up"></i> +1,20%</div>
                 </div>
             </div>
-            
-            <div class="asset-card">
+
+            <div class="asset-card" data-asset-id="HGLG11">
                 <div class="asset-info">
-                    <div class="asset-icon">🏢</div>
+                    <div class="asset-icon icon-hglg11"><i class="fas fa-building"></i></div>
                     <div class="asset-details">
                         <div class="asset-name">HGLG11</div>
-                        <div class="asset-type">FII CSHG Logística</div>
-                        <span class="asset-risk risk-low">Baixo Risco</span>
+                        <div class="asset-type">CSHG Logística FII</div>
+                        <span class="asset-risk risk-low"><i class="fas fa-check-circle"></i> Risco Baixo</span>
                     </div>
                 </div>
                 <div class="asset-value">
                     <div class="asset-price">R$ 164,90</div>
-                    <div class="asset-change change-positive">+0,8%</div>
+                    <div class="asset-change change-positive"><i class="fas fa-arrow-up"></i> +0,80%</div>
                 </div>
             </div>
-            
-            <div class="asset-card">
+
+            <div class="asset-card" data-asset-id="BOVA11">
                 <div class="asset-info">
-                    <div class="asset-icon">📊</div>
+                    <div class="asset-icon icon-bova11"><i class="fas fa-chart-bar"></i></div>
                     <div class="asset-details">
                         <div class="asset-name">BOVA11</div>
-                        <div class="asset-type">ETF Ibovespa</div>
-                        <span class="asset-risk risk-medium">Risco Médio</span>
+                        <div class="asset-type">iShares Ibovespa ETF</div>
+                        <span class="asset-risk risk-medium"><i class="fas fa-exclamation-triangle"></i> Risco
+                            Médio</span>
                     </div>
                 </div>
                 <div class="asset-value">
                     <div class="asset-price">R$ 98,42</div>
-                    <div class="asset-change change-negative">-0,5%</div>
+                    <div class="asset-change change-negative"><i class="fas fa-arrow-down"></i> -0,50%</div>
                 </div>
             </div>
-            
-            <div class="asset-card">
+
+            <div class="asset-card" data-asset-id="CDBINTER">
                 <div class="asset-info">
-                    <div class="asset-icon">💰</div>
+                    <div class="asset-icon icon-cdb"><i class="fas fa-piggy-bank"></i></div>
                     <div class="asset-details">
-                        <div class="asset-name">CDB 120% CDI</div>
-                        <div class="asset-type">Banco XYZ - 2 anos</div>
-                        <span class="asset-risk risk-low">Baixo Risco</span>
+                        <div class="asset-name">CDB Liquidez Diária</div>
+                        <div class="asset-type">Banco Inter 100% CDI</div>
+                        <span class="asset-risk risk-low"><i class="fas fa-check-circle"></i> Risco Baixo</span>
                     </div>
                 </div>
                 <div class="asset-value">
-                    <div class="asset-price">R$ 1.000,00</div>
-                    <div class="asset-change">-</div>
+                    <div class="asset-price">13,65% a.a.</div>
+                    <div class="asset-change" style="color: #555;">Ref: CDI</div>
                 </div>
             </div>
-            
-            <div class="asset-card">
+
+            <div class="asset-card" data-asset-id="BTC">
                 <div class="asset-info">
-                    <div class="asset-icon">🔗</div>
+                    <div class="asset-icon icon-btc"><i class="fab fa-bitcoin"></i></div>
                     <div class="asset-details">
                         <div class="asset-name">BTC</div>
                         <div class="asset-type">Bitcoin</div>
-                        <span class="asset-risk risk-high">Alto Risco</span>
+                        <span class="asset-risk risk-high"><i class="fas fa-skull-crossbones"></i> Risco Alto</span>
                     </div>
                 </div>
                 <div class="asset-value">
-                    <div class="asset-price">R$ 215.430,00</div>
-                    <div class="asset-change change-negative">-3,7%</div>
+                    <div class="asset-price">R$ 350.430,00</div>
+                    <div class="asset-change change-negative"><i class="fas fa-arrow-down"></i> -3,70%</div>
                 </div>
             </div>
         </div>
-        
+
         <div class="bottom-nav">
             <a href="#" class="nav-btn">
-                <div class="nav-icon">🏠</div>
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
                 <span>Início</span>
             </a>
             <a href="#" class="nav-btn active">
-                <div class="nav-icon">📊</div>
-                <span>Mercado</span>
+                <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                <span>Explorar</span>
             </a>
             <a href="#" class="nav-btn">
-                <div class="nav-icon">💼</div>
+                <div class="nav-icon"><i class="fas fa-wallet"></i></div>
                 <span>Carteira</span>
             </a>
             <a href="#" class="nav-btn">
-                <div class="nav-icon">👤</div>
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
                 <span>Perfil</span>
             </a>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const assetCards = document.querySelectorAll('.asset-card');
+            const navBtns = document.querySelectorAll('.nav-btn');
+
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function (event) { // Adicionado 'event'
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    addRippleEffect(this, event, true);
+                });
+            });
+
+            assetCards.forEach(card => {
+                card.addEventListener('click', function (event) { // Adicionado 'event'
+                    addRippleEffect(this, event);
+                    // Lógica de navegação (exemplo)
+                    const assetId = this.dataset.assetId;
+                    if (assetId) {
+                        console.log('Navegar para detalhes do ativo:', assetId);
+                        // window.location.href = 'telaDetalhesDoAtivo.html?id=' + assetId;
+                    }
+                });
+            });
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    addRippleEffect(this, e, true); // 'e' já é o evento
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                // Removido ripple.classList.add('ripple'); pois o estilo é aplicado diretamente
+
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.1)';
+
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: ${bgColor};
+                    transform: scale(0);
+                    animation: rippleAnim 0.6s linear;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px;
+                    pointer-events: none;
+                `;
+                element.appendChild(ripple); // Adiciona ao elemento correto
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+        });
+
+        // Garante que a animação ripple seja definida globalmente se não estiver no CSS
+        if (!document.querySelector('style#rippleAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'rippleAnimation';
+            style.textContent = `
+                @keyframes rippleAnim { to { transform: scale(10); opacity: 0; } }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
 </body>
+
 </html>
