@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Bee - Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a237e, #303f9f);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffc107;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .progress-container {
+            background-color: white;
+            margin: 0 15px 25px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a237e, #303f9f);
+            border-radius: 5px;
+            width: 75%;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+        
+        .topics-title {
+            padding: 0 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .topics-container {
+            padding: 0 15px;
+        }
+        
+        .topic-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .topic-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(26, 35, 126, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            color: #1a237e;
+        }
+        
+        .topic-info {
+            flex: 1;
+        }
+        
+        .topic-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .topic-progress {
+            display: flex;
+            align-items: center;
+        }
+        
+        .topic-progress-bar {
+            flex: 1;
+            height: 5px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-right: 10px;
+            overflow: hidden;
+        }
+        
+        .topic-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a237e, #303f9f);
+            border-radius: 5px;
+        }
+        
+        .topic-percent {
+            font-size: 12px;
+            color: #666;
+            min-width: 40px;
+        }
+        
+        .start-quiz-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 450px;
+            padding: 15px;
+            background-color: #ffc107;
+            color: #1a237e;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        
+        .start-quiz-btn:hover {
+            background-color: #ffd54f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quiz de Investimentos</h1>
+            <p>Teste seus conhecimentos e aprenda mais</p>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value">85%</div>
+                <div class="stat-label">Acertos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Quizzes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3º</div>
+                <div class="stat-label">Ranking</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-title">
+                <span>Seu progresso geral</span>
+                <span>75%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+            <div class="progress-text">15 de 20 tópicos completos</div>
+        </div>
+        
+        <div class="topics-title">Seu desempenho por tema</div>
+        
+        <div class="topics-container">
+            <div class="topic-card">
+                <div class="topic-icon">🏢</div>
+                <div class="topic-info">
+                    <div class="topic-name">Fundos Imobiliários</div>
+                    <div class="topic-progress">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 90%"></div>
+                        </div>
+                        <div class="topic-percent">90%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic-card">
+                <div class="topic-icon">📈</div>
+                <div class="topic-info">
+                    <div class="topic-name">Ações</div>
+                    <div class="topic-progress">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 85%"></div>
+                        </div>
+                        <div class="topic-percent">85%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic-card">
+                <div class="topic-icon">📊</div>
+                <div class="topic-info">
+                    <div class="topic-name">ETFs</div>
+                    <div class="topic-progress">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 70%"></div>
+                        </div>
+                        <div class="topic-percent">70%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic-card">
+                <div class="topic-icon">💰</div>
+                <div class="topic-info">
+                    <div class="topic-name">CDB e Renda Fixa</div>
+                    <div class="topic-progress">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 65%"></div>
+                        </div>
+                        <div class="topic-percent">65%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic-card">
+                <div class="topic-icon">🔗</div>
+                <div class="topic-info">
+                    <div class="topic-name">Criptomoedas</div>
+                    <div class="topic-progress">
+                        <div class="topic-progress-bar">
+                            <div class="topic-progress-fill" style="width: 50%"></div>
+                        </div>
+                        <div class="topic-percent">50%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="start-quiz-btn">Iniciar Novo Quiz</button>
+    </div>
+</body>
+</html>

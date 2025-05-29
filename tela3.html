@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Bee - Carteira</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a237e, #303f9f);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .portfolio-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .portfolio-change {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .change-positive {
+            color: #4caf50;
+        }
+        
+        .change-negative {
+            color: #f44336;
+        }
+        
+        .chart-container {
+            height: 150px;
+            margin: 20px 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .time-filters {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .time-filter {
+            background: none;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        
+        .time-filter.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .diversification {
+            background-color: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .diversification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .diversification-title {
+            font-weight: bold;
+        }
+        
+        .diversification-value {
+            color: #1a237e;
+            font-weight: bold;
+        }
+        
+        .diversification-chart {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .diversification-bars {
+            display: flex;
+            height: 100%;
+        }
+        
+        .bar {
+            height: 100%;
+        }
+        
+        .bar-stocks {
+            background-color: #2196f3;
+            width: 40%;
+        }
+        
+        .bar-fii {
+            background-color: #4caf50;
+            width: 20%;
+        }
+        
+        .bar-fixed {
+            background-color: #ffc107;
+            width: 30%;
+        }
+        
+        .bar-crypto {
+            background-color: #9c27b0;
+            width: 10%;
+        }
+        
+        .diversification-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        
+        .assets-list {
+            margin: 15px;
+        }
+        
+        .asset-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        
+        .asset-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .asset-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #eee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .asset-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .asset-type {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .asset-value {
+            text-align: right;
+        }
+        
+        .asset-amount {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .asset-change {
+            font-size: 12px;
+        }
+        
+        .change-positive {
+            color: #4caf50;
+        }
+        
+        .change-negative {
+            color: #f44336;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .nav-btn.active {
+            color: #1a237e;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin: 0 15px;
+        }
+        
+        .tab {
+            padding: 15px;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .tab.active {
+            color: #1a237e;
+            border-bottom: 2px solid #1a237e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Minha Carteira</h1>
+            <div class="portfolio-value">R$ 5.247,89</div>
+            <div class="portfolio-change change-positive">
+                <span>+ R$ 245,12 (4,9%)</span>
+            </div>
+            
+            <div class="chart-container">
+                Gráfico de evolução da carteira
+            </div>
+            
+            <div class="time-filters">
+                <button class="time-filter">1D</button>
+                <button class="time-filter">1S</button>
+                <button class="time-filter active">1M</button>
+                <button class="time-filter">3M</button>
+                <button class="time-filter">1A</button>
+                <button class="time-filter">Tudo</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active">Ativos</div>
+            <div class="tab">Histórico</div>
+            <div class="tab">Análise</div>
+        </div>
+        
+        <div class="diversification">
+            <div class="diversification-header">
+                <div class="diversification-title">Diversificação</div>
+                <div class="diversification-value">Boa</div>
+            </div>
+            <div class="diversification-chart">
+                <div class="diversification-bars">
+                    <div class="bar bar-stocks"></div>
+                    <div class="bar bar-fii"></div>
+                    <div class="bar bar-fixed"></div>
+                    <div class="bar bar-crypto"></div>
+                </div>
+            </div>
+            <div class="diversification-labels">
+                <span>Ações (40%)</span>
+                <span>FIIs (20%)</span>
+                <span>Renda Fixa (30%)</span>
+                <span>Cripto (10%)</span>
+            </div>
+        </div>
+        
+        <div class="assets-list">
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">📈</div>
+                    <div>
+                        <div class="asset-name">PETR4</div>
+                        <div class="asset-type">Ações - Energia</div>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-amount">R$ 1.245,32</div>
+                    <div class="asset-change change-positive">+2,3%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">🏢</div>
+                    <div>
+                        <div class="asset-name">HGLG11</div>
+                        <div class="asset-type">FII - Logística</div>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-amount">R$ 985,47</div>
+                    <div class="asset-change change-positive">+1,1%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">💰</div>
+                    <div>
+                        <div class="asset-name">CDB 120% CDI</div>
+                        <div class="asset-type">Renda Fixa</div>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-amount">R$ 2.500,00</div>
+                    <div class="asset-change">0,0%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">🔗</div>
+                    <div>
+                        <div class="asset-name">Bitcoin</div>
+                        <div class="asset-type">Criptomoeda</div>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-amount">R$ 517,10</div>
+                    <div class="asset-change change-negative">-3,2%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-nav">
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">🏠</div>
+                <span>Início</span>
+            </a>
+            <a href="#" class="nav-btn active">
+                <div class="nav-icon">💼</div>
+                <span>Carteira</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">📚</div>
+                <span>Aprender</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">👤</div>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

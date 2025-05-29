@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Bee - Explorar Ativos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a237e, #303f9f);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .search-bar {
+            display: flex;
+            background-color: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 5px;
+        }
+        
+        .search-bar button {
+            background: none;
+            border: none;
+            color: #1a237e;
+            cursor: pointer;
+        }
+        
+        .filter-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+        }
+        
+        .filter-chip {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-chip.active {
+            background-color: #ffc107;
+            color: #1a237e;
+        }
+        
+        .assets-list {
+            padding: 15px;
+        }
+        
+        .asset-card {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .asset-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .asset-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .asset-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(26, 35, 126, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #1a237e;
+            font-size: 20px;
+        }
+        
+        .asset-details {
+            flex: 1;
+        }
+        
+        .asset-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .asset-type {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .asset-risk {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .risk-low {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .risk-medium {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+        
+        .risk-high {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .asset-value {
+            text-align: right;
+        }
+        
+        .asset-price {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .asset-change {
+            font-size: 14px;
+        }
+        
+        .change-positive {
+            color: #4caf50;
+        }
+        
+        .change-negative {
+            color: #f44336;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .nav-btn.active {
+            color: #1a237e;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Explorar Ativos</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar ativos...">
+                <button>🔍</button>
+            </div>
+            <div class="filter-container">
+                <button class="filter-chip active">Todos</button>
+                <button class="filter-chip">Ações</button>
+                <button class="filter-chip">FIIs</button>
+                <button class="filter-chip">ETFs</button>
+                <button class="filter-chip">Renda Fixa</button>
+                <button class="filter-chip">Cripto</button>
+                <button class="filter-chip">Baixo Risco</button>
+                <button class="filter-chip">Alto Retorno</button>
+            </div>
+        </div>
+        
+        <div class="assets-list">
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">📈</div>
+                    <div class="asset-details">
+                        <div class="asset-name">PETR4</div>
+                        <div class="asset-type">Petróleo Brasileiro S.A.</div>
+                        <span class="asset-risk risk-medium">Risco Médio</span>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-price">R$ 32,15</div>
+                    <div class="asset-change change-positive">+1,2%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">🏢</div>
+                    <div class="asset-details">
+                        <div class="asset-name">HGLG11</div>
+                        <div class="asset-type">FII CSHG Logística</div>
+                        <span class="asset-risk risk-low">Baixo Risco</span>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-price">R$ 164,90</div>
+                    <div class="asset-change change-positive">+0,8%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">📊</div>
+                    <div class="asset-details">
+                        <div class="asset-name">BOVA11</div>
+                        <div class="asset-type">ETF Ibovespa</div>
+                        <span class="asset-risk risk-medium">Risco Médio</span>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-price">R$ 98,42</div>
+                    <div class="asset-change change-negative">-0,5%</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">💰</div>
+                    <div class="asset-details">
+                        <div class="asset-name">CDB 120% CDI</div>
+                        <div class="asset-type">Banco XYZ - 2 anos</div>
+                        <span class="asset-risk risk-low">Baixo Risco</span>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-price">R$ 1.000,00</div>
+                    <div class="asset-change">-</div>
+                </div>
+            </div>
+            
+            <div class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">🔗</div>
+                    <div class="asset-details">
+                        <div class="asset-name">BTC</div>
+                        <div class="asset-type">Bitcoin</div>
+                        <span class="asset-risk risk-high">Alto Risco</span>
+                    </div>
+                </div>
+                <div class="asset-value">
+                    <div class="asset-price">R$ 215.430,00</div>
+                    <div class="asset-change change-negative">-3,7%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-nav">
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">🏠</div>
+                <span>Início</span>
+            </a>
+            <a href="#" class="nav-btn active">
+                <div class="nav-icon">📊</div>
+                <span>Mercado</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">💼</div>
+                <span>Carteira</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <div class="nav-icon">👤</div>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
