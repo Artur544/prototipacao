@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Central de Quizzes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.08) 2px, transparent 2px),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.06) 3px, transparent 3px),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+            animation: float 25s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-70px) rotate(190deg) scale(1.05);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            /* Quase opaco para melhor contraste do conteúdo */
+            backdrop-filter: blur(15px);
+            min-height: 100vh;
+            padding-bottom: 120px;
+            /* Mais espaço para o botão fixo */
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #3f51b5 60%, #5c6bc0 100%);
+            color: white;
+            padding: 35px 20px 30px;
+            text-align: center;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 35px rgba(63, 81, 181, 0.4);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInDownHeader 0.8s ease-out;
+        }
+
+        .header::before {
+            /* Efeito de brilho sutil no header */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            animation: headerShine 4s ease-in-out infinite;
+        }
+
+        @keyframes headerShine {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .header h1 {
+            font-size: 28px;
+            /* Maior */
+            font-weight: 800;
+            /* Mais peso */
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            font-size: 30px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            opacity: 0.85;
+            font-size: 15px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .stats-container {
+            display: grid;
+            /* Usando grid para melhor controle */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            /* Espaço entre os cards */
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 10px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px) scale(1.03);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            /* Mais peso */
+            color: #ffc107;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .content-section {
+            /* Novo container para o conteúdo abaixo do header */
+            padding: 25px 20px;
+            animation: fadeInUpContent 0.7s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpContent {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .progress-container {
+            background-color: white;
+            padding: 25px;
+            /* Mais padding */
+            border-radius: 20px;
+            /* Mais arredondado */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-title {
+            font-weight: 600;
+            margin-bottom: 18px;
+            /* Mais espaço */
+            display: flex;
+            justify-content: space-between;
+            font-size: 17px;
+            /* Maior */
+            color: #1a237e;
+        }
+
+        .progress-title span:last-child {
+            font-weight: 700;
+        }
+
+        .progress-bar-outer {
+            /* Novo container para a barra */
+            height: 14px;
+            /* Mais grossa */
+            background-color: #e8ecf4;
+            /* Fundo mais suave */
+            border-radius: 7px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5c6bc0, #3f51b5, #1a237e);
+            /* Gradiente mais rico */
+            border-radius: 7px;
+            width: 0%;
+            /* Começa em 0 para animar */
+            transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
+            /* Animação suave */
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: #555;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .topics-title {
+            font-weight: 700;
+            /* Mais peso */
+            margin-bottom: 20px;
+            font-size: 20px;
+            /* Maior */
+            color: #1a237e;
+            padding-left: 5px;
+            /* Pequeno recuo */
+            border-left: 4px solid #ffc107;
+            /* Destaque amarelo */
+        }
+
+        .topics-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* Uma coluna por padrão */
+            gap: 18px;
+            /* Aumentado gap */
+        }
+
+        .topic-card {
+            background-color: white;
+            border-radius: 18px;
+            /* Mais arredondado */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+            /* Borda sutil para efeito hover */
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            border-color: #3f51b5;
+        }
+
+        .topic-icon {
+            width: 55px;
+            /* Maior */
+            height: 55px;
+            border-radius: 16px;
+            /* Mais quadrado-arredondado */
+            background-color: rgba(63, 81, 181, 0.1);
+            /* Cor base do ícone */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            font-size: 26px;
+            /* Maior */
+            color: #3f51b5;
+            /* Cor do ícone */
+            transition: all 0.3s ease;
+        }
+
+        .topic-card:hover .topic-icon {
+            background-color: #3f51b5;
+            color: white;
+            transform: rotate(10deg) scale(1.1);
+        }
+
+
+        .topic-info {
+            flex: 1;
+        }
+
+        .topic-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .topic-progress {
+            display: flex;
+            align-items: center;
+        }
+
+        .topic-progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #e8ecf4;
+            border-radius: 4px;
+            margin-right: 12px;
+            overflow: hidden;
+        }
+
+        .topic-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #81c784, #4caf50);
+            /* Gradiente verde para progresso */
+            border-radius: 4px;
+            transition: width 0.8s ease-out;
+        }
+
+        .topic-percent {
+            font-size: 13px;
+            color: #333;
+            font-weight: 600;
+            min-width: 40px;
+        }
+
+        .start-quiz-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 50px);
+            max-width: calc(450px - 50px);
+            padding: 18px;
+            /* Botão maior */
+            background: linear-gradient(135deg, #ffc107, #ffa000);
+            /* Gradiente amarelo/laranja */
+            color: #1a237e;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            /* Mais peso */
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.45);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .start-quiz-btn:hover {
+            background: linear-gradient(135deg, #ffd54f, #ffc107);
+            transform: translate(-50%, -3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(255, 193, 7, 0.55);
+        }
+
+        .start-quiz-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .start-quiz-btn:hover i {
+            transform: rotate(15deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-feather-alt"></i> Central de Quizzes Blue Bee</h1>
+            <p>Desafie seu conhecimento, acumule pontos e suba no ranking!</p>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value" data-target="85">0%</div>
+                    <div class="stat-label">Média de Acertos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" data-target="24">0</div>
+                    <div class="stat-label">Quizzes Feitos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" data-target="3">🏆 0º</div>
+                    <div class="stat-label">Sua Posição</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="progress-container">
+                <div class="progress-title">
+                    <span>Seu Progresso Geral nos Temas</span>
+                    <span id="geralProgressPercent">0%</span>
+                </div>
+                <div class="progress-bar-outer">
+                    <div class="progress-fill" id="geralProgressFill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="geralProgressText">0 de 20 tópicos essenciais completos</div>
+            </div>
+
+            <div class="topics-title">Desempenho por Tema</div>
+
+            <div class="topics-container">
+                <div class="topic-card" data-progress="90">
+                    <div class="topic-icon"><i class="fas fa-city"></i></div>
+                    <div class="topic-info">
+                        <div class="topic-name">Fundos Imobiliários (FIIs)</div>
+                        <div class="topic-progress">
+                            <div class="topic-progress-bar">
+                                <div class="topic-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="topic-percent">0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="topic-card" data-progress="85">
+                    <div class="topic-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="topic-info">
+                        <div class="topic-name">Ações e Mercado de Capitais</div>
+                        <div class="topic-progress">
+                            <div class="topic-progress-bar">
+                                <div class="topic-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="topic-percent">0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="topic-card" data-progress="70">
+                    <div class="topic-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <div class="topic-info">
+                        <div class="topic-name">Renda Fixa (CDB, Tesouro)</div>
+                        <div class="topic-progress">
+                            <div class="topic-progress-bar">
+                                <div class="topic-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="topic-percent">0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="topic-card" data-progress="50">
+                    <div class="topic-icon"><i class="fab fa-bitcoin"></i></div>
+                    <div class="topic-info">
+                        <div class="topic-name">Criptomoedas e Ativos Digitais</div>
+                        <div class="topic-progress">
+                            <div class="topic-progress-bar">
+                                <div class="topic-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="topic-percent">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="start-quiz-btn"><i class="fas fa-random"></i> Iniciar Quiz Aleatório</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animação de contagem para estatísticas
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'), 10);
+                const isRanking = stat.textContent.includes('🏆');
+                const suffix = stat.textContent.includes('%') ? '%' : '';
+                let current = 0;
+                const duration = 1500; // 1.5 segundos
+                const steps = 50; // Número de passos para a animação
+                const stepTime = duration / steps;
+                const increment = target / steps;
+
+                let i = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    i++;
+                    if (i >= steps) {
+                        stat.textContent = (isRanking ? '🏆 ' : '') + target + (isRanking ? 'º' : suffix);
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = (isRanking ? '🏆 ' : '') + Math.floor(current) + (isRanking ? 'º' : suffix);
+                    }
+                }, stepTime);
+            });
+
+            // Animação das barras de progresso dos tópicos
+            const topicCards = document.querySelectorAll('.topic-card');
+            let totalProgress = 0;
+            let completedTopics = 0;
+            const totalTopics = topicCards.length * 5; // Ex: 5 sub-tópicos por tema para um total de 20
+            let essentialTopicsCompleted = 0;
+
+
+            topicCards.forEach(card => {
+                const progressBarFill = card.querySelector('.topic-progress-fill');
+                const percentText = card.querySelector('.topic-percent');
+                const targetProgress = parseInt(card.getAttribute('data-progress'), 10);
+
+                setTimeout(() => { // Para que a transição CSS funcione
+                    progressBarFill.style.width = targetProgress + '%';
+                }, 500); // Delay para começar após a entrada da página
+
+                // Animação do texto de porcentagem
+                let currentPercent = 0;
+                const percentSteps = 30;
+                const percentIncrement = targetProgress / percentSteps;
+                const percentTimer = setInterval(() => {
+                    currentPercent += percentIncrement;
+                    if (currentPercent >= targetProgress) {
+                        percentText.textContent = targetProgress + '%';
+                        clearInterval(percentTimer);
+                    } else {
+                        percentText.textContent = Math.floor(currentPercent) + '%';
+                    }
+                }, 30);
+
+                // Simulação de cálculo para progresso geral
+                if (targetProgress >= 80) essentialTopicsCompleted += 5; // Exemplo
+                else if (targetProgress >= 60) essentialTopicsCompleted += 3;
+                else if (targetProgress >= 40) essentialTopicsCompleted += 2;
+                else if (targetProgress > 0) essentialTopicsCompleted += 1;
+
+            });
+
+            // Progresso Geral Simulado
+            const geralProgressFill = document.getElementById('geralProgressFill');
+            const geralProgressPercent = document.getElementById('geralProgressPercent');
+            const geralProgressText = document.getElementById('geralProgressText');
+
+            const finalGeralProgress = Math.min(100, Math.round((essentialTopicsCompleted / totalTopics) * 100));
+
+            setTimeout(() => {
+                if (geralProgressFill) geralProgressFill.style.width = finalGeralProgress + '%';
+                if (geralProgressPercent) geralProgressPercent.textContent = finalGeralProgress + '%';
+                if (geralProgressText) geralProgressText.textContent = `${essentialTopicsCompleted} de ${totalTopics} tópicos essenciais completos`;
+            }, 800);
+
+
+            // Ripple effect para o botão principal
+            const mainButton = document.querySelector('.start-quiz-btn');
+            if (mainButton) {
+                mainButton.addEventListener('click', function (event) {
+                    addRippleEffect(this, event);
+                });
+            }
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.4)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnim 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+            if (!document.querySelector('style#rippleAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimation';
+                style.textContent = `@keyframes rippleAnim { to { transform: scale(10); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+
+        });
+    </script>
+</body>
+
+</html>

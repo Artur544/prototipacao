@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Seu Progresso Educacional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+            --positive-color: #2ecc71;
+            /* Verde para sugestões/progresso */
+            --attention-color: #f39c12;
+            /* Laranja para pontos a melhorar */
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 18% 35%, rgba(255, 255, 255, 0.07) 2px, transparent 2px),
+                radial-gradient(circle at 72% 75%, rgba(255, 255, 255, 0.05) 3px, transparent 3px),
+                radial-gradient(circle at 48% 10%, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
+            animation: float 24s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-63px) rotate(168deg) scale(1.032);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 25px 20px;
+            position: relative;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(63, 81, 181, 0.35);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header::before {
+            /* Efeito de brilho sutil */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShineRelatorio 4.5s ease-in-out infinite 0.3s;
+        }
+
+        @keyframes headerShineRelatorio {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            padding: 25px 20px;
+            animation: fadeInUpContent 0.7s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpContent {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            /* Mais arredondado */
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            /* Mais espaço */
+            padding: 25px;
+            /* Mais padding interno */
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-weight: 700;
+            /* Mais peso */
+            font-size: 19px;
+            /* Maior */
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* Mais espaço */
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title i {
+            font-size: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            /* Responsivo */
+            gap: 18px;
+            /* Mais espaço */
+            margin-bottom: 10px;
+            /* Ajustado */
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, var(--light-bg) 0%, #ffffff 100%);
+            padding: 20px 15px;
+            /* Padding ajustado */
+            border-radius: 16px;
+            /* Mais arredondado */
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            /* Maior */
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            /* Maior */
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            /* Maior */
+            background-color: #eef2f9;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            flex-direction: column;
+            border: 1px dashed #c5cae9;
+            /* Borda tracejada mais suave */
+        }
+
+        .chart-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        .chart-placeholder span {
+            font-weight: 500;
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            /* Alinha ícone com a primeira linha de texto */
+            margin-bottom: 15px;
+            /* Mais espaço */
+            padding: 18px;
+            /* Mais padding */
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .list-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .list-icon {
+            font-size: 20px;
+            /* Maior */
+            margin-right: 15px;
+            margin-top: 2px;
+            /* Alinhamento vertical fino */
+            width: 24px;
+            /* Largura fixa para alinhamento */
+            text-align: center;
+        }
+
+        .list-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .suggestion-item {
+            background-color: rgba(46, 204, 113, 0.08);
+            /* Verde mais suave */
+            border-left: 5px solid var(--positive-color);
+        }
+
+        .suggestion-item .list-icon {
+            color: var(--positive-color);
+        }
+
+        .attention-item {
+            /* Renomeado de error-item */
+            background-color: rgba(243, 156, 18, 0.08);
+            /* Laranja mais suave */
+            border-left: 5px solid var(--attention-color);
+        }
+
+        .attention-item .list-icon {
+            color: var(--attention-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1><i class="fas fa-user-graduate" style="margin-right: 8px;"></i>Seu Desempenho</h1>
+        </div>
+        <div class="content">
+            <div class="section">
+                <div class="section-title"><i class="fas fa-tachometer-alt"></i> Resumo Geral</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="far fa-clock"></i></div>
+                        <div class="stat-value" data-target="18">0h</div>
+                        <div class="stat-label">Tempo de Uso</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="stat-value" data-target="7">0</div>
+                        <div class="stat-label">Desafios Concluídos</div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="section">
+                <div class="section-title"><i class="fas fa-exclamation-circle"></i> Pontos para Melhorar</div>
+                <div class="list-item attention-item">
+                    <span class="list-icon"><i class="fas fa-lightbulb"></i></span>
+                    <span class="list-text">Investir mais em <strong>Renda Fixa</strong> para equilibrar a carteira</span>
+                </div>
+                <div class="list-item attention-item">
+                    <span class="list-icon"><i class="fas fa-lightbulb"></i></span>
+                    <span class="list-text">Diversifique mais a sua carteira aplique em <strong>Cripto e ETF</strong>.</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title"><i class="fas fa-rocket"></i> Sugestões para Decolar</div>
+                <div class="list-item suggestion-item">
+                    <span class="list-icon"><i class="fas fa-check-circle"></i></span>
+                    <span class="list-text">Parabéns pelo seu desempenho em FIIs! Continue explorando novos
+                        fundos.</span>
+                </div>
+                <div class="list-item suggestion-item">
+                    <span class="list-icon"><i class="fas fa-star"></i></span>
+                    <span class="list-text">Você está perto de desbloquear o desafio "Mestre da
+                        Diversificação"!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Animação de contagem para estatísticas
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'), 10);
+                const total = stat.getAttribute('data-total') ? `/${stat.getAttribute('data-total')}` : '';
+                const suffix = stat.textContent.includes('%') ? '%' : (stat.textContent.includes('h') ? 'h' : '');
+                let current = 0;
+                const duration = 1500;
+                const steps = 50;
+                const stepTime = duration / steps;
+                const increment = target / steps;
+
+                let i = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    i++;
+                    if (i >= steps) {
+                        stat.textContent = target + total + suffix;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current) + total + suffix;
+                    }
+                }, stepTime);
+            });
+
+            window.goBack = function () {
+                // Lógica para voltar
+                alert('Voltar...');
+            }
+
+            // Adicionar animação de entrada aos cards e divisores de data
+            const animatedElements = document.querySelectorAll('.date-divider, .section, .stat-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            animatedElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = `opacity 0.5s ease-out ${index * 0.05}s, transform 0.5s ease-out ${index * 0.05}s`;
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Perfil Investidor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e0e7ff;
+            /* Azul mais claro para bordas */
+            --success-color: #2ecc71;
+            --header-gradient-edit: linear-gradient(135deg, #5c6bc0 0%, #3f51b5 100%);
+            /* Gradiente mais suave para edição */
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.07) 2px, transparent 2px),
+                radial-gradient(circle at 85% 70%, rgba(255, 255, 255, 0.05) 3px, transparent 3px),
+                radial-gradient(circle at 38% 58%, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
+            animation: float 25s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-65px) rotate(170deg) scale(1.033);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: var(--header-gradient-edit);
+            color: white;
+            padding: 25px 20px;
+            position: relative;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(92, 107, 192, 0.35);
+            /* Sombra correspondente ao gradiente */
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header::before {
+            /* Efeito de brilho sutil */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShineEdit 4.5s ease-in-out infinite 0.4s;
+        }
+
+        @keyframes headerShineEdit {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .form-wrapper {
+            /* Wrapper para animação */
+            padding: 30px 25px;
+            /* Padding uniforme */
+            animation: fadeInUpForm 0.7s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpForm {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-pic-group {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            animation: scaleInPic 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s forwards;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        @keyframes scaleInPic {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .profile-pic-display {
+            /* Container da imagem e botão */
+            position: relative;
+            width: 120px;
+            /* Maior */
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #e0e7ff;
+            border: 5px solid white;
+            /* Borda branca grossa */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background-image: url('https://source.unsplash.com/random/120x120?profile,user');
+            background-size: cover;
+            background-position: center;
+            transition: filter 0.3s ease;
+        }
+
+        .profile-pic-display:hover .profile-pic {
+            filter: brightness(0.8);
+        }
+
+        .change-pic-overlay {
+            /* Overlay para o botão */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-pic-display:hover .change-pic-overlay {
+            opacity: 1;
+        }
+
+        .change-pic-overlay i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .change-pic-overlay span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        #profilePicInput {
+            display: none;
+        }
+
+        /* Esconde o input de arquivo real */
+
+
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+            /* Animação escalonada para inputs */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 15px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            /* Alinhar ícone e input */
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+            position: relative;
+            /* Para o ícone */
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15), 0 5px 15px rgba(63, 81, 181, 0.1);
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: var(--primary-color);
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            flex: 1;
+            padding: 16px 20px 16px 50px;
+            /* Espaço para o ícone */
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: transparent;
+            font-weight: 500;
+            color: var(--text-dark);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .input-wrapper input[type="date"] {
+            padding-right: 15px;
+        }
+
+        .input-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        /* Parte de Gênero */
+        .gender-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .gender-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .gender-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .gender-option label {
+            display: flex;
+            gap: 8px;
+            padding: 16px 10px;
+            border: 2px solid #e8ecf4;
+            border-radius: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fd 100%);
+        }
+
+        .gender-option label i {
+            color: #9ca3af;
+            transition: color 0.3s;
+        }
+
+        .gender-option input[type="radio"]:checked+label {
+            border-color: #3f51b5;
+            background: linear-gradient(135deg, #e8eaf6, #c5cae9);
+            color: #1a237e;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.2);
+        }
+
+        .gender-option input[type="radio"]:checked+label i {
+            color: #3f51b5;
+        }
+
+        .gender-option input[type="radio"]:focus+label {
+            box-shadow:
+                0 0 0 4px rgba(63, 81, 181, 0.1),
+                0 8px 25px rgba(63, 81, 181, 0.15);
+        }
+
+
+        .save-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #5c6bc0 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 330px;
+            box-shadow: 0 8px 25px rgba(63, 81, 181, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(63, 81, 181, 0.4);
+        }
+
+        .save-btn:disabled {
+            background: #5c6bc0;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* .slide {
+            display: none;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <h1><i class="fas fa-balance-scale-right" style="margin-right: 8px;"></i>Perfil Investidor</h1>
+        </div>
+
+        <div class="form-wrapper">
+
+            <div id="slider">
+
+                <div class="slide">
+                    <div class="input-group">
+                        <label>O que é mais importante pra você na hora de investir?</label>
+                        <div class="gender-option">
+                            <input type="radio" id="male" name="gender" value="male">
+                            <label for="male"> Rentabilidade e Diversificação.</label>
+                        </div>
+                        <div class="gender-option">
+                            <input type="radio" id="female" name="gender" value="female">
+                            <label for="female"> Segurança e Tranquilidade.</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <button class="save-btn fixed-bottom-btn" id="saveBtn"><a href="PerfilInvestidor3.html"> Próximo</a></button>
+            
+        </div>
+    </div>
+    <!-- <script>
+        const slider = document.getElementById('slider');
+        const slidesNodeList = document.querySelectorAll('.slide');
+        const slidesArray = Array.from(slidesNodeList);
+        const next = document.getElementById('next');
+        const slideCount = slidesArray.length;
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            // Remove 'active' de todos os slides para resetar animações/transições CSS
+            slidesArray.forEach(s => s.classList.remove('active'));
+
+            // Move o slider - agora usando a fórmula correta
+            const transformValue = -index * 33.33;
+            slider.style.transform = `translateX(${transformValue}%)`;
+
+            currentSlide = index;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slideCount - 1) {
+                showSlide(currentSlide + 1);
+            } else {
+                alert('Redirecionando para a tela principal...');
+            }
+        });
+
+        showSlide(0);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const saveBtn = document.getElementById('saveBtn');
+            const formInputs = document.querySelectorAll('#editProfileForm input');
+            const profilePicInput = document.getElementById('profilePicInput');
+            const profilePicDiv = document.querySelector('.profile-pic');
+
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function (event) {
+                    event.preventDefault(); // Previne envio real do formulário
+                    addRippleEffect(this, event);
+                    // Adicionar lógica de validação e salvamento aqui
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Salvando...';
+                    this.disabled = true;
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-save" style="margin-right: 8px;"></i> Salvar Alterações';
+                        this.disabled = false;
+                        alert('Informações salvas com sucesso! (Simulação)');
+                    }, 1500);
+                });
+            }
+
+            formInputs.forEach((input, index) => {
+                input.parentElement.parentElement.style.animation = `fadeInUpInput 0.5s ease-out ${0.1 + index * 0.05}s forwards`;
+                input.parentElement.parentElement.style.opacity = '0'; // Inicia invisível para animação
+            });
+
+            if (profilePicInput && profilePicDiv) {
+                profilePicInput.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            profilePicDiv.style.backgroundImage = `url('${e.target.result}')`;
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            window.goBack = function () { alert('Voltar...'); }
+
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.3)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnimEdit 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+            if (!document.querySelector('style#rippleAnimationEdit')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimationEdit';
+                style.textContent = `@keyframes rippleAnimEdit { to { transform: scale(15); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+            // Adiciona a keyframe para fadeInUpInput globalmente se não existir
+            if (!document.querySelector('style#fadeInUpInputAnimation')) {
+                const styleFade = document.createElement('style');
+                styleFade.id = 'fadeInUpInputAnimation';
+                styleFade.textContent = `@keyframes fadeInUpInput { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }`;
+                document.head.appendChild(styleFade);
+            }
+        });
+    </script> -->
+</body>
+
+</html>

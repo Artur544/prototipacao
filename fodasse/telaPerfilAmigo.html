@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Perfil de Amigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --accent-color: #ffc107;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+            --danger-color: #f44336;
+            --danger-hover: #d32f2f;
+            --success-color: #4CAF50;
+            --success-hover: #43a047;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Partículas Flutuantes */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 5% 90%, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 45% 50%, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            animation: float 22s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-70px) rotate(180deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--light-bg);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 30px 20px 40px;
+            text-align: center;
+            border-bottom-left-radius: 35px;
+            /* Mais arredondado */
+            border-bottom-right-radius: 35px;
+            /* Mais arredondado */
+            position: relative;
+            box-shadow: 0 10px 30px rgba(63, 81, 181, 0.35);
+            animation: fadeInDownHeader 0.7s ease-out;
+            overflow: hidden;
+            /* Para o brilho */
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efeito de Brilho */
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShineProfile 5s ease-in-out infinite 0.8s;
+        }
+
+        @keyframes headerShineProfile {
+
+            0%,
+            100% {
+                left: -100%;
+            }
+
+            50% {
+                left: 150%;
+            }
+        }
+
+
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            /* Ajustado */
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .profile-pic {
+            width: 95px;
+            /* Aumentado */
+            height: 95px;
+            /* Aumentado */
+            border-radius: 50%;
+            margin: 15px auto 15px;
+            /* Espaçamento ajustado */
+            border: 5px solid white;
+            /* Borda mais grossa */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            background-image: url('https://source.unsplash.com/random/100x100?person,woman');
+            /* Imagem exemplo */
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.4s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .profile-name {
+            font-size: 24px;
+            /* Maior */
+            font-weight: 700;
+            /* Mais peso */
+            margin-bottom: 8px;
+        }
+
+        .profile-level {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            padding: 5px 15px;
+            /* Ajustado */
+            border-radius: 20px;
+            /* Mais arredondado */
+            font-size: 13px;
+            /* Maior */
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 30px;
+            /* Mais espaço */
+            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.4);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(255, 255, 255, 0.15);
+            /* Mais visível */
+            padding: 20px;
+            /* Mais padding */
+            border-radius: 18px;
+            /* Mais arredondado */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            /* Maior */
+            font-weight: 800;
+            /* Mais peso */
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            /* Menos transparente */
+            font-weight: 500;
+        }
+
+        .section {
+            margin: 25px 20px;
+            /* Ajustado */
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            /* Mais arredondado */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.09);
+            padding: 25px;
+            /* Mais padding */
+            border: 1px solid var(--border-color);
+            opacity: 0;
+            /* Para animação */
+            transform: translateY(15px);
+            /* Para animação */
+            animation: fadeInUpSection 0.6s ease-out forwards;
+        }
+
+        .section:nth-of-type(1) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeInUpSection {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-weight: 700;
+            /* Mais peso */
+            font-size: 19px;
+            /* Maior */
+            margin-bottom: 20px;
+            /* Mais espaço */
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .conquista-card {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fd;
+            /* Fundo suave */
+            padding: 15px 18px;
+            /* Mais padding */
+            border-radius: 12px;
+            /* Mais arredondado */
+            margin-bottom: 12px;
+            /* Mais espaço */
+            border: 1px solid #eef2f9;
+            transition: all 0.3s ease;
+        }
+
+        .conquista-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 14px;
+            /* Ajusta padding no hover */
+        }
+
+        .conquista-icon {
+            font-size: 28px;
+            /* Maior */
+            margin-right: 18px;
+            /* Mais espaço */
+            color: var(--accent-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .conquista-name {
+            font-weight: 600;
+            /* Mais peso */
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        .action-buttons {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Espaço entre botões */
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            /* Mais arredondado */
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            /* Para animação */
+            transform: translateY(15px);
+            /* Para animação */
+            animation: fadeInUpSection 0.6s ease-out forwards;
+        }
+
+        .btn-remove {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: 0 6px 18px rgba(244, 67, 54, 0.35);
+            animation-delay: 0.5s;
+            /* Atraso diferente */
+        }
+
+        .btn-remove:hover {
+            background-color: var(--danger-hover);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 22px rgba(244, 67, 54, 0.45);
+        }
+
+        .btn-challenge {
+            /* Botão Desafiar */
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 6px 18px rgba(76, 175, 80, 0.35);
+            animation-delay: 0.4s;
+            /* Atraso diferente */
+        }
+
+        .btn-challenge:hover {
+            background-color: var(--success-hover);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 22px rgba(76, 175, 80, 0.45);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+            <div class="profile-pic"></div>
+            <div class="profile-name">Ana Julia</div>
+            <div class="profile-level"><i class="fas fa-star" style="margin-right: 5px;"></i>Nível 8 - Investidora
+                Sênior</div>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value">25</div>
+                    <div class="stat-label">Conquistas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">Amigos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5800</div>
+                    <div class="stat-label">Pontos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title"><i class="fas fa-trophy"></i> Últimas Conquistas</div>
+            <div class="conquista-card"> <span class="conquista-icon">🏆</span> <span class="conquista-name">Rainha da
+                    Renda Fixa</span> </div>
+            <div class="conquista-card"> <span class="conquista-icon">🥇</span> <span class="conquista-name">Top 1 no
+                    Ranking Mensal</span> </div>
+            <div class="conquista-card"> <span class="conquista-icon">🚀</span> <span class="conquista-name">Mestre dos
+                    FIIs</span> </div>
+            <div class="conquista-card"> <span class="conquista-icon">💡</span> <span
+                    class="conquista-name">Diversificação Inteligente</span> </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn btn-challenge"><i class="fas fa-gamepad"></i> Desafiar Amigo</button>
+            <button class="action-btn btn-remove"><i class="fas fa-user-times"></i> Remover Amizade</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Função do Botão Voltar (Exemplo)
+        function goBack() {
+            alert('Voltando...');
+            // history.back(); // Use isso para voltar na navegação real
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.action-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Adicionar lógica para os botões aqui
+                    if (this.classList.contains('btn-challenge')) {
+                        alert('Desafiando Ana Julia!');
+                    } else if (this.classList.contains('btn-remove')) {
+                        if (confirm('Tem certeza que deseja remover Ana Julia da sua lista de amigos?')) {
+                            alert('Amizade removida.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

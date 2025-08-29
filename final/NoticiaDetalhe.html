@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Detalhes da Notícia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #1a237e;
+            --light-bg: #f8f9fd;
+            --card-bg: white;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e8ecf4;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 80%, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 88% 22%, rgba(255, 255, 255, 0.03) 3px, transparent 3px),
+                radial-gradient(circle at 35% 45%, rgba(255, 255, 255, 0.04) 2px, transparent 2px);
+            animation: float 29s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-69px) rotate(145deg) scale(1.038);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            /* Fundo branco para leitura */
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 70px rgba(0, 0, 0, 0.2);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .news-header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);
+            /* Fundo translúcido para o header */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            /* Padding ajustado */
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 22px;
+            /* Maior */
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(63, 81, 181, 0.1);
+        }
+
+        .news-image-container {
+            width: 100%;
+            height: 250px;
+            /* Altura aumentada */
+            overflow: hidden;
+            /* Garante que a imagem não ultrapasse */
+            position: relative;
+        }
+
+        .news-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease-out;
+        }
+
+        .news-image-container:hover .news-image {
+            transform: scale(1.05);
+        }
+
+        .image-overlay-gradient {
+            /* Gradiente sutil sobre a imagem para legibilidade do título se sobrepor */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+            pointer-events: none;
+        }
+
+        .news-content-scrollable {
+            /* Para permitir scroll do conteúdo textual */
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 20px 30px;
+            /* Padding inferior maior */
+        }
+
+        .news-content {
+            animation: fadeInContent 0.6s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .news-title {
+            font-size: 26px;
+            /* Maior */
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.35;
+            /* Ajustado */
+            color: var(--secondary-color);
+        }
+
+        .news-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+
+        .news-meta i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+        .news-source {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .news-text {
+            font-family: 'Lora', serif;
+            /* Fonte serifada para o corpo do texto */
+            font-size: 17px;
+            /* Maior para leitura */
+            line-height: 1.8;
+            /* Espaçamento entre linhas generoso */
+            text-align: justify;
+            color: #34495e;
+            /* Tom de cinza escuro para o texto */
+        }
+
+        .news-text p {
+            margin-bottom: 22px;
+            /* Mais espaço entre parágrafos */
+        }
+
+        .news-text strong {
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .news-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dashed var(--primary-color);
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .news-text a:hover {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+
+        .related-articles-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .related-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .related-article-card {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        .related-article-card:hover {
+            background-color: #f0f4f8;
+        }
+
+        .related-article-img {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .related-article-info .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .related-article-info .source {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="news-header-sticky">
+            <div class="header-controls">
+                <button class="control-btn back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+                <button class="control-btn share-btn" onclick="shareArticle()"><i class="fas fa-share-alt"></i></button>
+            </div>
+        </div>
+
+        <div class="news-image-container">
+            <img src="https://harus.ind.br/wp-content/uploads/2023/02/5-praias-brasileiras.jpg" alt="Imagem da Notícia"
+                class="news-image">
+            <div class="image-overlay-gradient"></div>
+        </div>
+
+        <div class="news-content-scrollable">
+            <div class="news-content">
+                <h1 class="news-title">Impacto da Redução da Taxa Selic nos Seus Investimentos Futuros</h1>
+                <div class="news-meta">
+                    <span><i class="fas fa-user-edit"></i> Por <span class="news-source">Valor Econômico</span></span>
+                    <span><i class="fas fa-calendar-alt"></i> 29 de Maio, 2025</span>
+                </div>
+                <div class="news-text">
+                    <p>O Comitê de Política Monetária (Copom) do Banco Central surpreendeu o mercado ao anunciar uma
+                        <strong>nova redução na taxa básica de juros</strong>, a Selic, que agora se estabelece em
+                        10,50% ao ano. Esta decisão, a quinta consecutiva neste ciclo de afrouxamento monetário,
+                        reverbera por todo o espectro financeiro, impactando diretamente desde o investidor conservador
+                        até o mais arrojado.</p>
+                    <p>Com a Selic em um patamar mais baixo, aplicações tradicionais de <strong>renda fixa
+                            pós-fixada</strong>, como o Tesouro Selic e diversos CDBs que acompanham o CDI, tendem a
+                        oferecer uma rentabilidade nominal menor. Isso não significa, necessariamente, uma perda de
+                        valor, mas sim um convite à reflexão sobre a diversificação da carteira.</p>
+                    <p>"É um momento crucial para o investidor reavaliar sua estratégia", comenta Ana Carolina Oliveira,
+                        economista-chefe da consultoria Alpha Invest. "A busca por alternativas que possam oferecer
+                        retornos superiores, mesmo que com um grau de risco ligeiramente maior, torna-se mais premente.
+                        Falamos de fundos multimercado, ações de empresas com bons fundamentos e, para os mais ousados,
+                        até mesmo uma parcela em <a href='#'>criptoativos</a>."</p>
+                    <p>Por outro lado, a medida visa estimular a economia real. Crédito mais acessível pode impulsionar
+                        o consumo e o investimento produtivo, o que, teoricamente, beneficia o mercado de ações a médio
+                        e longo prazo. Setores como varejo, construção civil e indústria podem encontrar um ambiente
+                        mais favorável para expansão.</p>
+                    <p>Acompanhe as <a href="#">últimas notícias do Blue Bee</a> para mais análises.</p>
+                </div>
+
+                <div class="related-articles-section">
+                    <div class="related-title">Leia Também</div>
+                    <div class="related-article-card">
+                        <img src="https://harus.ind.br/wp-content/uploads/2023/02/5-praias-brasileiras.jpg" alt="Artigo Relacionado 1"
+                            class="related-article-img">
+                        <div class="related-article-info">
+                            <div class="title">Como diversificar sua carteira em cenário de juros baixos</div>
+                            <div class="source">InvestNews • 4 min leitura</div>
+                        </div>
+                    </div>
+                    <div class="related-article-card">
+                        <img src="https://harus.ind.br/wp-content/uploads/2023/02/5-praias-brasileiras.jpg" alt="Artigo Relacionado 2"
+                            class="related-article-img">
+                        <div class="related-article-info">
+                            <div class="title">Tesouro Direto: Ainda vale a pena investir?</div>
+                            <div class="source">Blue Bee Academy • 6 min leitura</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            window.goBack = function () {
+                // Lógica para voltar
+                alert('Voltar para a lista de notícias...');
+                // window.history.back(); ou navegação específica
+            }
+            window.shareArticle = function () {
+                // Lógica para compartilhar
+                if (navigator.share) {
+                    navigator.share({
+                        title: document.querySelector('.news-title').textContent,
+                        text: document.querySelector('.news-text p').textContent.substring(0, 100) + "...",
+                        url: window.location.href
+                    }).then(() => console.log('Compartilhado com sucesso!'))
+                        .catch(error => console.log('Erro ao compartilhar:', error));
+                } else {
+                    alert('Funcionalidade de compartilhar não suportada ou bloqueada pelo navegador.');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

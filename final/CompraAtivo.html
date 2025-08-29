@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blue Bee - Comprar Ativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating particles background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.07) 2px, transparent 2px),
+                radial-gradient(circle at 75% 45%, rgba(255, 255, 255, 0.05) 3px, transparent 3px),
+                radial-gradient(circle at 55% 80%, rgba(255, 255, 255, 0.06) 2px, transparent 2px);
+            animation: float 24s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-65px) rotate(150deg) scale(1.04);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(360deg) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
+            min-height: 100vh;
+            padding-bottom: 30px;
+            /* Ajustado para mais respiro */
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.15);
+            animation: slideUpContainer 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpContainer {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 50%, #81C784 100%);
+            /* Gradiente Verde */
+            color: white;
+            padding: 25px 20px;
+            /* Padding aumentado */
+            position: relative;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.35);
+            animation: fadeInDownHeader 0.7s ease-out;
+        }
+
+        @keyframes fadeInDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .asset-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .asset-icon-header {
+            font-size: 16px;
+        }
+
+        .current-price-header {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .form-container {
+            padding: 25px;
+            animation: fadeInUpForm 0.6s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUpForm {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .balance-info {
+            text-align: right;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 500;
+            padding: 10px;
+            background: #f0f4f8;
+            border-radius: 12px;
+        }
+
+        .balance-info strong {
+            color: #4CAF50;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .input-wrapper {
+            display: flex;
+            border: 2px solid #e8ecf4;
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fd 100%);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15), 0 5px 15px rgba(76, 175, 80, 0.1);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            background: transparent;
+            color: #333;
+        }
+
+        .input-currency {
+            padding: 16px 20px;
+            background-color: #e8ecf4;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .quick-amounts {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .quick-amount {
+            flex: 1;
+            padding: 10px;
+            background-color: #eef2f9;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3f51b5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quick-amount:hover,
+        .quick-amount.active {
+            background-color: #dbe4f6;
+            border-color: #3f51b5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(63, 81, 181, 0.15);
+        }
+
+        .info-card,
+        .warning-box {
+            background: #f8f9fd;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e8ecf4;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a237e;
+            font-size: 17px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-card hr {
+            margin: 12px 0;
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .total-value .info-value {
+            color: #4CAF50;
+            font-size: 16px;
+        }
+
+        .warning-box {
+            background-color: #fff3e0;
+            border-color: #ffe0b2;
+            color: #e65100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            padding: 15px;
+        }
+
+        .warning-box i {
+            font-size: 18px;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .confirm-btn:hover {
+            background: linear-gradient(135deg, #388E3C 0%, #66BB6A 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(76, 175, 80, 0.45);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeInModal 0.4s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            animation: zoomInModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes zoomInModal {
+            from {
+                transform: scale(0.95);
+                opacity: 0.5;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            color: #ffa726;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #1a237e;
+        }
+
+        .modal-text {
+            margin-bottom: 30px;
+            line-height: 1.7;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .modal-btn-outline {
+            background-color: transparent;
+            border: 2px solid #3f51b5;
+            color: #3f51b5;
+        }
+
+        .modal-btn-outline:hover {
+            background-color: #e8eaf6;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #1a237e, #3f51b5);
+            border: 2px solid transparent;
+            color: white;
+            box-shadow: 0 5px 15px rgba(63, 81, 181, 0.25);
+        }
+
+        .modal-btn-primary:hover {
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(63, 81, 181, 0.35);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn"><i class="fas fa-arrow-left"></i></button>
+            <h1>Comprar Ativo</h1>
+            <div class="asset-info-header">
+                <div class="asset-icon-header">📈</div> <span>PETR4</span>
+            </div>
+            <div class="current-price-header">Preço Atual: R$ 32,15</div>
+        </div>
+
+        <div class="form-container">
+            <div class="balance-info">Saldo disponível: <strong>R$ 1.580,00</strong></div>
+
+            <div class="input-group">
+                <label for="quantity">Quantidade de cotas</label>
+                <div class="input-wrapper">
+                    <input type="number" id="quantity" placeholder="0,00" value="10">
+                    <div class="input-currency" style="background:transparent; color:#000000; font-weight:bold;">-</div>
+                    <div class="input-currency" style="background:transparent; color:#000000; font-weight:bold;">+</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="amount">Valor a investir</label>
+                <div class="input-wrapper">
+                    <div class="input-currency">R$</div>
+                    <input type="number" id="amount" placeholder="0" value="321.50" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>Este ativo possui <strong>risco médio</strong>. Seu perfil é <strong>Conservador</strong>. Avalie
+                    antes de prosseguir.</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-title">Resumo da Operação</div>
+                <div class="info-item"> <span class="info-label">Preço Uitário</span> <span
+                        class="info-value">R$ 32.15</span> </div>
+                <div class="info-item"> <span class="info-label">Quantidade</span> <span
+                        class="info-value">10</span> </div>
+                <hr>
+                <div class="info-item total-value"> <span class="info-label">Débito Total Estimado</span> <span
+                        class="info-value">R$ 321.50</span> </div>
+            </div>
+
+            <button class="confirm-btn" id="confirmBtn"><i class="fas fa-check-circle"
+                    style="margin-right: 8px;"></i>Confirmar Compra</button>
+        </div>
+    </div>
+
+    <div class="modal" id="warningModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="modal-title">Aviso de Perfil</div>
+            <div class="modal-text">
+                O ativo <strong>PETR4</strong> (Risco Médio) pode não ser o mais adequado para seu perfil
+                <strong>Conservador</strong>. Deseja continuar mesmo assim?
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-outline" onclick="closeModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" onclick="continuePurchase()">Continuar Compra</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmBtn = document.getElementById('confirmBtn');
+            const warningModal = document.getElementById('warningModal');
+            const isRiskIncompatible = true; // Simula a verificação de risco
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    if (isRiskIncompatible) {
+                        warningModal.style.display = 'flex';
+                    } else {
+                        alert('Compra confirmada!'); // Simula compra direta
+                        addRippleEffect(confirmBtn, event);
+                    }
+                });
+            }
+
+            // Quick amounts
+            const quickAmountBtns = document.querySelectorAll('.quick-amount');
+            const amountInput = document.getElementById('amount');
+
+            quickAmountBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    quickAmountBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const value = this.textContent.replace('R$ ', '').replace('Máx', '1580'); // Simula valor max
+                    if (amountInput && !isNaN(parseFloat(value))) {
+                        amountInput.value = parseFloat(value);
+                        // Disparar cálculo de cotas aqui se necessário
+                    }
+                    addRippleEffect(this, event, true);
+                });
+            });
+
+
+            window.closeModal = function () { if (warningModal) warningModal.style.display = 'none'; }
+            window.continuePurchase = function () {
+                alert('Compra confirmada (após aviso)!');
+                closeModal();
+            }
+
+            // Ripple function (se não estiver global)
+            function addRippleEffect(element, event, isLight = false) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                const bgColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.4)';
+
+                ripple.style.cssText = `
+                    position: absolute; border-radius: 50%;
+                    background: ${bgColor}; transform: scale(0);
+                    animation: rippleAnim 0.6s linear;
+                    left: ${x}px; top: ${y}px; width: 20px; height: 20px;
+                    margin-left: -10px; margin-top: -10px; pointer-events: none;
+                `;
+                element.appendChild(ripple);
+                setTimeout(() => { ripple.remove(); }, 600);
+            }
+            if (!document.querySelector('style#rippleAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'rippleAnimation';
+                style.textContent = `@keyframes rippleAnim { to { transform: scale(10); opacity: 0; } }`;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+
+</html>
